@@ -30,6 +30,13 @@ autocmd({"BufRead"}, {
   end
 })
 
+-- workaround for un/core handle error message
+autocmd({ "VimLeave" }, {
+  callback = function()
+    vim.fn.jobstart('notify-send "hello"', {detach=true})
+  end,
+})
+
 -- open personal latex 
 -- autocmd({"BufRead"}, {
 --   group = endoxideGroup,
