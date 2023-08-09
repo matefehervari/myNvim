@@ -3,6 +3,6 @@ if not status_ok then
     return
 end
 
-require("endoxide.lsp.lsp-installer")
-require("endoxide.lsp.handlers").setup()
+require("endoxide.lsp.mason")
+require("endoxide.lsp.lsp-setup").setup()
 require("endoxide.lsp.null-ls")
