@@ -33,7 +33,7 @@ autocmd({"BufRead"}, {
 -- workaround for un/core handle error message
 autocmd({ "VimLeave" }, {
   callback = function()
-    vim.fn.jobstart('notify-send "hello"', {detach=true})
+    vim.fn.jobstart('notify-send ""', {detach=true})
   end,
 })
 

@@ -64,8 +64,7 @@ return packer.startup(function(use)
   use "hrsh7th/cmp-nvim-lsp" -- cmp works with LSP
 
   -- snippets
-  use {"L3MON4D3/LuaSnip", --snippet engine
-    commit = "3fa5c8d938e4ed9dcfd3e07d13b587cba4f87e7d"}
+  use {"L3MON4D3/LuaSnip",} --snippet engine
   use "rafamadriz/friendly-snippets" -- a bunch of snippets to use
 
   -- colorscheme
@@ -73,7 +72,10 @@ return packer.startup(function(use)
 
   -- lsp stuff
   use("neovim/nvim-lspconfig") -- enable LSP
-  use("williamboman/nvim-lsp-installer") -- LSP installer
+  -- use("williamboman/nvim-lsp-installer") -- LSP installer
+  use {"williamboman/mason.nvim"} -- LSP installer
+  use {"williamboman/mason-lspconfig.nvim"}
+
   use {"jose-elias-alvarez/null-ls.nvim",
     commit = "af12c0df06afb737c66eb91bf5eaf92bd2d01a42"}-- for formatters and linters
 
@@ -96,7 +98,7 @@ return packer.startup(function(use)
   -- sessions
   use("olimorris/persisted.nvim")
 
-  -- Python
+-- Python
   use "mfussenegger/nvim-dap-python"
 
   -- Java

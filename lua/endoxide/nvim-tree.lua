@@ -8,7 +8,7 @@ if not config_status_ok then
   return
 end
 
-local on_attach_status_ok, on_attach = pcall(require, "nvim-tree-on-attach")
+local on_attach_status_ok, on_attach = pcall(require, "endoxide.nvim-tree-on-attach")
 if not on_attach_status_ok then
   return
 end
