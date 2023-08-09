@@ -8,9 +8,15 @@ if not config_status_ok then
   return
 end
 
+local on_attach_status_ok, on_attach = pcall(require, "nvim-tree-on-attach")
+if not on_attach_status_ok then
+  return
+end
+
 local tree_cb = nvim_tree_config.nvim_tree_callback
 
 nvim_tree.setup {
+  on_attach = on_attach,
   disable_netrw = true,
   hijack_netrw = true,
   hijack_cursor = false,
@@ -43,14 +49,6 @@ nvim_tree.setup {
     -- height = 30,
     side = "left",
     adaptive_size = true,
-    mappings = {
-      custom_only = false,
-      list = {
-        { key = { "l", "<CR>"}, action = "edit" },
-        { key = "h", cb = tree_cb "close_node" },
-        { key = "v", cb = tree_cb "vsplit" },
-      },
-    },
     number = true,
     relativenumber = true,
   },
