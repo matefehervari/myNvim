@@ -13,8 +13,6 @@ local tree_cb = nvim_tree_config.nvim_tree_callback
 nvim_tree.setup {
   disable_netrw = true,
   hijack_netrw = true,
-  open_on_setup = false,
-  open_on_tab = false,
   hijack_cursor = false,
   sync_root_with_cwd = true,
   hijack_directories = {
