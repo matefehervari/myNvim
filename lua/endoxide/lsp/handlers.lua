@@ -27,6 +27,10 @@ return function(server_name)
   end
 
   if server_name == "jdtls" then goto continue end -- server alrady checked in handlers
+  if server_name == "rust_analyzer" then  -- let rust-tools setup lspconfig
+    require("endoxide.lsp.rust-tools-setup")
+    goto continue
+  end
 
   -- This setup() function is exactly the same as lspconfig's setup function.
   -- Refer to https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md

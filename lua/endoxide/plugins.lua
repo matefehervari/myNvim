@@ -62,6 +62,8 @@ return packer.startup(function(use)
   use "hrsh7th/cmp-nvim-lua" -- vim object completions
   use "saadparwaiz1/cmp_luasnip" -- snippet completions
   use "hrsh7th/cmp-nvim-lsp" -- cmp works with LSP
+  use 'hrsh7th/cmp-nvim-lsp-signature-help' -- cmp signature help
+
 
   -- snippets
   use {"L3MON4D3/LuaSnip",} --snippet engine
@@ -106,6 +108,9 @@ return packer.startup(function(use)
 
   -- Latex
   use "lervag/vimtex"
+
+  -- Rust
+  use 'simrat39/rust-tools.nvim'
 
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins

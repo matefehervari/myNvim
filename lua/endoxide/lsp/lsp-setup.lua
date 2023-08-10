@@ -1,4 +1,5 @@
 local lspconfig = require("lspconfig")
+local nnoremap = require("endoxide.keymap").nnoremap
 
 local M = {}
 
@@ -16,8 +17,8 @@ M.setup = function()
   end
 
   local config = {
-    -- disable virtual text
-    virtual_text = false,
+    -- enable virtual text
+    virtual_text = true,
     -- show signs
     signs = {
       active = signs,
@@ -41,7 +42,7 @@ M.setup = function()
     border = "rounded",
   })
 
-  vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
+vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
     border = "rounded",
   })
 end
@@ -103,6 +104,11 @@ M.on_attach = function(client, bufnr)
     end
     client.resolved_capabilities.document_formatting = true
     client.resolved_capabilities.textDocument.completion.completionItem.snippetSupport = false
+
+  elseif client.name == "rust_analyzer" then
+    local rt = require("rust-tools")
+    nnoremap("K", rt.hover_actions.hover_actions, {bufnr = bufnr})
+    nnoremap("<leader>ca", rt.code_action_group.code_action_group, {bufnr = bufnr})
   end
 end
 

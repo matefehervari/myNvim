@@ -26,6 +26,10 @@ function ColorMyPencils()
     bg = "#343d59",
   })
 
+  hl("VirtualColumn", {
+    fg="#111111"
+  })
+
   hl("CursorLineNR", {
     bg = "None"
   })
