@@ -5,6 +5,7 @@ end
 
 rt.setup({
   server = {
-    on_attach = require("endoxide.lsp.lsp-setup").on_attach
+    on_attach = require("endoxide.lsp.lsp-setup").on_attach,
+    capabilities = require("endoxide.lsp.lsp-setup").capabilities,
   }
 })

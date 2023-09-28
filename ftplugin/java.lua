@@ -33,7 +33,6 @@ end
 local extendedClientCapabilities = jdtls.extendedClientCapabilities
 extendedClientCapabilities.resolveAdditionalTextEditsSupport = true
 
-local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
 local project_name = vim.fn.fnamemodify(root_dir, ":p:h:t")
 -- print(project_name)
 
@@ -96,8 +95,8 @@ local config = {
   -- on_attach = function(client, bufnr)
   --   require("jdtls").setup_dap({hotcodereplace = "auto"})
   -- end,
-  on_attach = require("endoxide.lsp.handlers").on_attach,
-  capabilities = require("endoxide.lsp.handlers").capabilities,
+  on_attach = require("endoxide.lsp.lsp-setup").on_attach,
+  capabilities = require("endoxide.lsp.lsp-setup").capabilities,
 
   -- 💀
   -- This is the default if not provided, you can remove it. Or adjust as needed.

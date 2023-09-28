@@ -28,7 +28,12 @@ return function(server_name)
 
   if server_name == "jdtls" then goto continue end -- server alrady checked in handlers
   if server_name == "rust_analyzer" then  -- let rust-tools setup lspconfig
-    require("endoxide.lsp.rust-tools-setup")
+    local rust_analyzer_opts = require("endoxide.lsp.settings.rust_analyzer")
+    opts = vim.tbl_deep_extend("force", rust_analyzer_opts, opts)
+
+    -- require("endoxide.lsp.rust-tools-setup")
+    local rt = require("rust-tools")
+    rt.setup({server = opts})
     goto continue
   end
 
