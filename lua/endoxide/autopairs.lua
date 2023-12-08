@@ -28,7 +28,14 @@ npairs.setup {
 }
 
 npairs.add_rules({Rule("$", "$", "tex")
-                :with_move(cond.after_text("$"))})
+                :with_move(function(opts)
+                  return opts.next_char == opts.char
+                end)})
+
+npairs.add_rules({Rule("\\left[", "\\right]", "tex")
+                :with_move(function(opts)
+                  return opts.next_char == "\\right]" and opts.char == "]"
+                end)})
 
 local cmp_autopairs = require "nvim-autopairs.completion.cmp"
 local cmp_status_ok, cmp = pcall(require, "cmp")

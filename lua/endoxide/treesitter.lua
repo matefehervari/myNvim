@@ -10,12 +10,9 @@ configs.setup {
     disable = { "latex" }, -- list of language that will be disabled
     additional_vim_regex_highlighting = true,
   },
-  context_commentstring = {
-    enable =true,
-  },
-  autotag = {
-      enable = true,
-  },
+  -- autotag = {
+  --     enable = true,
+  -- },
 }
 
 -- spellsitter.setup()

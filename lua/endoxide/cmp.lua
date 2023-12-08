@@ -45,11 +45,25 @@ local kind_icons = {
   TypeParameter = "",
 }
 
+local border = {
+          { "╭", "CmpBorder" },
+          { "─", "CmpBorder" },
+          { "╮", "CmpBorder" },
+          { "│", "CmpBorder" },
+          { "╯", "CmpBorder" },
+          { "─", "CmpBorder" },
+          { "╰", "CmpBorder" },
+          { "│", "CmpBorder" }
+        }
+
 cmp.setup {
   window = {
-    documentation = {
-      border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
-      },
+    -- documentation = {
+    --   border = border,
+    -- },
+    -- completion = {
+    --   border = border,
+    -- },
   },
   snippet = {
     expand = function(args)
