@@ -6,9 +6,10 @@ end
 bufferline.setup {
     options = {
         numbers = "none", -- | "ordinal" | "buffer_id" | "both" | function({ ordinal, id, lower, raise }): string,
-        close_command = "Bdelete! %d", -- can be a string | function, see "Mouse actions"
+        close_command = "bdelete! %d", -- can be a string | function, see "Mouse actions"
         indicator = {
-            icon = "▎",
+            -- icon = "▎",
+            icon = "",
             style = "icon"
         },
         buffer_close_icon = "",
@@ -31,9 +32,16 @@ bufferline.setup {
         tab_size = 21,
         diagnostics = false, -- | "nvim_lsp" | "coc",
         diagnostics_update_in_insert = false,
-        offsets = { { filetype = "NvimTree", text = "", padding = 1 } },
+        offsets = {
+          {
+            filetype = "NvimTree",
+            text = "File Explorer",
+            highlight="Directory",
+            padding = 0,
+          }
+        },
         show_buffer_icons = true,
-        show_buffer_close_icons = false,
+        show_buffer_close_icons = true,
         show_close_icon = true,
         show_tab_indicators = true,
         persist_buffer_sort = true, -- whether or not custom sorted buffers should persist
@@ -53,12 +61,12 @@ bufferline.setup {
     },
     highlights = {
         fill = {
-            fg = { attribute = "fg", highlight = "TabLine" },
-            bg = { attribute = "bg", highlight = "TabLine" },
+            fg = { attribute = "fg", highlight = "Normal" },
+            bg = { attribute = "bg", highlight = "Normal" },
         },
         background = {
             fg = { attribute = "fg", highlight = "TabLine" },
-            bg = { attribute = "bg", highlight = "TabLine" },
+            bg = { attribute = "bg", highlight = "Normal" },
         },
 
         -- buffer_selected = {
@@ -68,16 +76,16 @@ bufferline.setup {
         --   },
         buffer_visible = {
             fg = { attribute = "fg", highlight = "TabLine" },
-            bg = { attribute = "bg", highlight = "TabLine" },
+            bg = { attribute = "bg", highlight = "Normal" },
         },
 
         close_button = {
             fg = { attribute = "fg", highlight = "TabLine" },
-            bg = { attribute = "bg", highlight = "TabLine" },
+            bg = { attribute = "bg", highlight = "Normal" },
         },
         close_button_visible = {
             fg = { attribute = "fg", highlight = "TabLine" },
-            bg = { attribute = "bg", highlight = "TabLine" },
+            bg = { attribute = "bg", highlight = "Normal" },
         },
         -- close_button_selected = {
         --   fg = {attribute='fg',highlight='TabLineSel'},
@@ -90,7 +98,7 @@ bufferline.setup {
         },
         tab = {
             fg = { attribute = "fg", highlight = "TabLine" },
-            bg = { attribute = "bg", highlight = "TabLine" },
+            bg = { attribute = "bg", highlight = "Normal" },
         },
         tab_close = {
             -- fg = {attribute='fg',highlight='LspDiagnosticsDefaultError'},
@@ -116,7 +124,7 @@ bufferline.setup {
 
         modified = {
             fg = { attribute = "fg", highlight = "TabLine" },
-            bg = { attribute = "bg", highlight = "TabLine" },
+            bg = { attribute = "bg", highlight = "Normal" },
         },
         modified_selected = {
             fg = { attribute = "fg", highlight = "Normal" },
@@ -129,7 +137,7 @@ bufferline.setup {
 
         separator = {
             fg = { attribute = "bg", highlight = "TabLine" },
-            bg = { attribute = "bg", highlight = "TabLine" },
+            bg = { attribute = "bg", highlight = "Normal" },
         },
         separator_selected = {
             fg = { attribute = "bg", highlight = "Normal" },

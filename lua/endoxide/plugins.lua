@@ -35,6 +35,8 @@ local plugins = {
   "hrsh7th/cmp-nvim-lsp", -- cmp works with LSP
   "hrsh7th/cmp-nvim-lsp-signature-help", -- cmp signature help
 
+  -- lualine
+  "nvim-lualine/lualine.nvim",
 
   -- snippets
   "L3MON4D3/LuaSnip", --snippet engine

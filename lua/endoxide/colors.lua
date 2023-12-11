@@ -50,6 +50,14 @@ function ColorMyPencils()
     fg = "#5eacd3"
   })
 
+  hl("NvimTreeWinSeparator", {
+    bg = "none"
+  })
+
+  hl("NvimTreeNormalNC", {
+    bg = "none"
+  })
+
   -- hl("netrwDir", {
   --     fg = "#5eacd3"
   -- })
