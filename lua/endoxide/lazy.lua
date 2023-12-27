@@ -15,25 +15,11 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 local plugins = {
-
   "nvim-lua/popup.nvim", -- An implementation of the Popup API from vim in Neovim
-  "nvim-lua/plenary.nvim", -- Useful lua functions used ny lots of plugins
-  "windwp/nvim-autopairs", -- Autopairs
+  {import = "endoxide.plugins"},
+
   "windwp/nvim-ts-autotag", -- Autotags
   "numToStr/Comment.nvim", -- Easily comment stuff
-  "kyazdani42/nvim-web-devicons",
-  "kyazdani42/nvim-tree.lua",
-  "akinsho/bufferline.nvim",
-  "akinsho/toggleterm.nvim",
-
-  "hrsh7th/nvim-cmp", -- The completion plugin
-  "hrsh7th/cmp-buffer", -- buffer completions
-  "hrsh7th/cmp-path", -- path completions
-  "hrsh7th/cmp-cmdline", -- cmdline completions
-  "hrsh7th/cmp-nvim-lua", -- vim object completions
-  "saadparwaiz1/cmp_luasnip", -- snippet completions
-  "hrsh7th/cmp-nvim-lsp", -- cmp works with LSP
-  "hrsh7th/cmp-nvim-lsp-signature-help", -- cmp signature help
 
   -- lualine
   "nvim-lualine/lualine.nvim",
@@ -54,7 +40,6 @@ local plugins = {
   "jose-elias-alvarez/null-ls.nvim",
 
   -- Telescope
-  "nvim-telescope/telescope.nvim",
   "nvim-telescope/telescope-media-files.nvim",
 
   -- TreeSitter

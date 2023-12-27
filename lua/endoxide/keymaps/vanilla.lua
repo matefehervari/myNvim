@@ -1,5 +1,4 @@
 local Remap = require("endoxide.keymap")
-local status_ok, luasnip = pcall(require, "luasnip")
 
 local nnoremap = Remap.nnoremap
 local vnoremap = Remap.vnoremap
@@ -9,13 +8,6 @@ local cnoremap = Remap.cnoremap
 local tnoremap = Remap.tnoremap
 local snoremap = Remap.snoremap
 local nmap = Remap.nmap
-
-local function remove_all_snips()
-    while not luasnip.get_active_snip() do
-      print("removing snippet: " .. luasnip.get_sctive_snip())
-      luasnip.unlink_current()
-    end
-end
 
 -- enter insert mode 2 lines above or below
 nnoremap("<leader>O", "O<ESC>O")
@@ -67,19 +59,6 @@ nnoremap("<Tab>", ">>")
 nnoremap("<S-Tab>", "<<")
 vnoremap(">", ">gv")
 vnoremap("<", "<gv")
--- if status_ok then
---   snoremap("<S-Tab>", function ()
---     remove_all_snips()
---     vim.cmd([[call feedkeys("\<Esc>")]])
---   end) -- must be placed here as select also used normal and visual
--- end
-
-snoremap("<C-g>", function ()
-  print(vim.api.nvim_get_mode()["mode"])
-end)
-
--- netrw
-nnoremap("<leader>pv", ":Ex<CR>")
 
 -- paste in place of visual block
 xnoremap("<leader>p", [["_dP]])
@@ -91,18 +70,9 @@ nnoremap("<leader>s", ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>")
 nnoremap("<C-d>", "<C-d>zz")
 nnoremap("<C-u>", "<C-u>zz")
 
--- terminal creation
-nnoremap("<leader>t", ":ToggleTerm<CR>")
-nnoremap("<leader>T", ":ToggleTerm direction=tab<CR>")
-
 nnoremap("<leader>cd", function()
     vim.cmd("lcd" .. vim.fn.expand("%:p:h"))
 end)
-
--- tab navigation
-nnoremap("<S-l>", ":bnext<CR>")
-nnoremap("<S-h>", ":bprevious<CR>")
-nnoremap("<C-q>", ":bdelete<CR>")
 
 -- visual bracketing
 vnoremap("<leader>(", "s()<Esc><Left>p")

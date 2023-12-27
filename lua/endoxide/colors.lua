@@ -58,6 +58,14 @@ function ColorMyPencils()
     bg = "none"
   })
 
+  hl("BufferLineDevIconDefaultSelected", {
+    bg = "none"
+  })
+
+  hl("BufferLineDevIconLuaSelected", {
+    bg = "none"
+  })
+
   -- hl("netrwDir", {
   --     fg = "#5eacd3"
   -- })

@@ -19,6 +19,8 @@ ls.config.set_config({
   enable_autosnippets = true
 })
 
+require("endoxide.snippets.latex")
+
 ls.add_snippets(nil, {
   java = {
     snip({
@@ -54,75 +56,75 @@ ls.add_snippets(nil, {
         text({"\\rightarrow"})
       }
     ),
-    snip({ trig = ";a", snippetType = "autosnippet" },
-      {
-        text({"\\alpha"})
-      }
-    ),
-    snip({ trig = ";b", snippetType = "autosnippet" },
-      {
-        text({"\\beta"})
-      }
-    ),
-    snip({ trig = ";g", snippetType = "autosnippet" },
-      {
-        text({"\\gamma"})
-      }
-    ),
-    snip({ trig = ";d", snippetType = "autosnippet" },
-      {
-        text({"\\delta"})
-      }
-    ),
-    snip({ trig = ";ep", snippetType = "autosnippet" },
-      {
-        text({"\\varepsilon"})
-      }
-    ),
-    snip({ trig = ";z", snippetType = "autosnippet" },
-      {
-        text({"\\zeta"})
-      }
-    ),
-    snip({ trig = ";et", snippetType = "autosnippet" },
-      {
-        text({"\\eta"})
-      }
-    ),
-    snip({ trig = ";t", snippetType = "autosnippet" },
-      {
-        text({"\\theta"})
-      }
-    ),
-    snip({ trig = ";k", snippetType = "autosnippet" },
-      {
-        text({"\\kappa"})
-      }
-    ),
-    snip({ trig = ";l", snippetType = "autosnippet" },
-      {
-        text({"\\lambda"})
-      }
-    ),
-    snip({ trig = ";m", snippetType = "autosnippet" },
-      {
-        text({"\\mu"})
-      }
-    ),
-    snip({ trig = ";n", snippetType = "autosnippet" },
-      {
-        text({"\\nu"})
-      }
-    ),
-    snip({ trig = ";p", snippetType = "autosnippet" },
-      {
-        text({"\\pi"})
-      }
-    ),
-    snip({ trig = ";s", snippetType = "autosnippet" },
-      {
-        text({"\\sigma"})
-      }
-    ),
+    -- snip({ trig = ";a", snippetType = "autosnippet" },
+    --   {
+    --     text({"\\alpha"})
+    --   }
+    -- ),
+    -- snip({ trig = ";b", snippetType = "autosnippet" },
+    --   {
+    --     text({"\\beta"})
+    --   }
+    -- ),
+    -- snip({ trig = ";g", snippetType = "autosnippet" },
+    --   {
+    --     text({"\\gamma"})
+    --   }
+    -- ),
+    -- snip({ trig = ";d", snippetType = "autosnippet" },
+    --   {
+    --     text({"\\delta"})
+    --   }
+    -- ),
+    -- snip({ trig = ";ep", snippetType = "autosnippet" },
+    --   {
+    --     text({"\\varepsilon"})
+    --   }
+    -- ),
+    -- snip({ trig = ";z", snippetType = "autosnippet" },
+    --   {
+    --     text({"\\zeta"})
+    --   }
+    -- ),
+    -- snip({ trig = ";et", snippetType = "autosnippet" },
+    --   {
+    --     text({"\\eta"})
+    --   }
+    -- ),
+    -- snip({ trig = ";t", snippetType = "autosnippet" },
+    --   {
+    --     text({"\\theta"})
+    --   }
+    -- ),
+    -- snip({ trig = ";k", snippetType = "autosnippet" },
+    --   {
+    --     text({"\\kappa"})
+    --   }
+    -- ),
+    -- snip({ trig = ";l", snippetType = "autosnippet" },
+    --   {
+    --     text({"\\lambda"})
+    --   }
+    -- ),
+    -- snip({ trig = ";m", snippetType = "autosnippet" },
+    --   {
+    --     text({"\\mu"})
+    --   }
+    -- ),
+    -- snip({ trig = ";n", snippetType = "autosnippet" },
+    --   {
+    --     text({"\\nu"})
+    --   }
+    -- ),
+    -- snip({ trig = ";p", snippetType = "autosnippet" },
+    --   {
+    --     text({"\\pi"})
+    --   }
+    -- ),
+    -- snip({ trig = ";s", snippetType = "autosnippet" },
+    --   {
+    --     text({"\\sigma"})
+    --   }
+    -- ),
   }
 })

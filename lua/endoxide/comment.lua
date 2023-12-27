@@ -1,7 +1,5 @@
 local Remap = require("endoxide.keymap")
-local nmap = Remap.nmap
-
-nmap("<leader>c", "gcc")
+local nnoremap = Remap.nnoremap
 
 local status_ok, comment = pcall(require, "Comment")
 if not status_ok then
