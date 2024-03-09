@@ -9,6 +9,9 @@ local tnoremap = Remap.tnoremap
 local snoremap = Remap.snoremap
 local nmap = Remap.nmap
 
+nnoremap("<space>", "<Nop>")
+
+
 -- enter insert mode 2 lines above or below
 nnoremap("<leader>O", "O<ESC>O")
 nnoremap("<leader>o", "o<ESC>o")
@@ -55,8 +58,10 @@ vnoremap("<C-h>", ":m '<-2<CR>gv")
 vnoremap("<C-l>", ":m '>+1<CR>gv")
 
 -- tab is superior
-nnoremap("<Tab>", ">>")
-nnoremap("<S-Tab>", "<<")
+-- nnoremap("<Tab>", ">>")
+-- nnoremap("<S-Tab>", "<<")
+nnoremap(">", ">>")
+nnoremap("<", "<<")
 vnoremap(">", ">gv")
 vnoremap("<", "<gv")
 
@@ -64,7 +69,7 @@ vnoremap("<", "<gv")
 xnoremap("<leader>p", [["_dP]])
 
 -- replaces words currently hovered with keyword boundaries set
-nnoremap("<leader>s", ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>")
+nnoremap("<leader>r", ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>")
 
 -- move half pages with recentre
 nnoremap("<C-d>", "<C-d>zz")

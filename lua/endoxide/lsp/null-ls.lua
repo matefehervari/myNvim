@@ -12,9 +12,9 @@ local code_actions = null_ls.builtins.code_actions
 null_ls.setup {
     debug = false,
     sources = {
-        formatting.black.with { extra_args = { "--fast" } },
+        formatting.ruff,
         -- line length error code
-        diagnostics.flake8.with { extra_args = {"--extend-ignore=E501,E203"}},
+        -- diagnostics.flake8.with { extra_args = {"--extend-ignore=E501,E203"}},
         -- diagnostics.spellcheck,
         -- diagnostics.cspell.with{
         --   filetypes = {"tex"}

@@ -32,6 +32,8 @@ return {
       }
 
       npairs.setup(config)
+      table.insert(npairs.get_rules("'")[1].not_filetypes, "tex")
+      table.insert(npairs.get_rules([["]])[1].not_filetypes, "tex")
 
       -- rules
       local rules = {
@@ -49,6 +51,21 @@ return {
         :with_move(function(opts)
           return opts.next_char == "\\right)" and opts.char == ")"
         end),
+
+        Rule("(", ")", "tex")
+        :with_move(cond.move_right())
+        :with_pair(cond.is_bracket_line())
+        :with_move(cond.is_bracket_line_move()),
+
+        Rule("[", "]", "tex")
+        :with_move(cond.move_right())
+        :with_pair(cond.is_bracket_line())
+        :with_move(cond.is_bracket_line_move()),
+
+        Rule("{", "}", "tex")
+        :with_move(cond.move_right())
+        :with_pair(cond.is_bracket_line())
+        :with_move(cond.is_bracket_line_move()),
       }
 
       npairs.add_rules(rules)
@@ -61,6 +78,19 @@ return {
         return
       end
       -- add brackets after cmp.lsp event (function and method completion)
-      cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+      cmp.event:on("confirm_done",
+        cmp_autopairs.on_confirm_done({
+          filetypes = {
+            ["*"] = {
+              ["("] = {
+                kind = {
+                  cmp.lsp.CompletionItemKind.Function,
+                  cmp.lsp.CompletionItemKind.Method,
+                }
+              }
+            }
+          }
+        })
+      )
     end
   }

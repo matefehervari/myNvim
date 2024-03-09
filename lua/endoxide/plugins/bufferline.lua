@@ -7,6 +7,9 @@ return {
   config = function ()
     local bufferline = require("bufferline")
 
+    local icons = require("endoxide.icons")
+    local ui = icons.ui
+
     local config = {
       options = {
         numbers = "none", -- | "ordinal" | "buffer_id" | "both" | function({ ordinal, id, lower, raise }): string,
@@ -16,11 +19,11 @@ return {
           icon = "",
           style = "icon"
         },
-        buffer_close_icon = "",
-        modified_icon = "●",
-        close_icon = "",
-        left_trunc_marker = "",
-        right_trunc_marker = "",
+        buffer_close_icon = ui.Close,
+        modified_icon = ui.Circle,
+        close_icon = ui.Close,
+        left_trunc_marker = ui.ArrowCircleLeft,
+        right_trunc_marker = ui.ArrowCircleRight,
         max_name_length = 30,
         max_prefix_length = 30, -- prefix used when a buffer is de-duplicated
         tab_size = 21,

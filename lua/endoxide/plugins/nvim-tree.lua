@@ -63,6 +63,14 @@ return {
       renderer = {
         root_folder_modifier = ":t",
       },
+      system_open = {
+        cmd = "sioyek"
+      },
+      git = {
+        enable = true,
+        ignore = false,
+        timeout = 500,
+      }
     }
 
     nvim_tree.setup(config)

@@ -44,10 +44,22 @@ return {
     end
 
     local python = Terminal:new({ cmd = "python3", hidden = true, direction = "float" })
+    local gitui = Terminal:new({ cmd = "gitui", hidden = true, direction = "float"})
+    local swipl = Terminal:new({ cmd = "swipl", hidden = true, direction = "float"})
 
     function _PYTHON_TOGGLE()
       python:toggle()
       vim.api.nvim_buf_set_keymap(0, 't', '<S-Tab>', [[<C-\><C-n>:lua _PYTHON_TOGGLE()<cr>]], {noremap = true})
+    end
+
+    function _GITUI_TOGGLE()
+      gitui:toggle()
+      vim.api.nvim_buf_set_keymap(0, 't', '<S-Tab>', [[<C-\><C-n>:lua _GITUI_TOGGLE()<cr>]], {noremap = true})
+    end
+
+    function _SWIPL_TOGGLE()
+      swipl:toggle()
+      vim.api.nvim_buf_set_keymap(0, 't', '<S-Tab>', [[<C-\><C-n>:lua _SWIPL_TOGGLE()<cr>]], {noremap = true})
     end
 
     function _G.set_terminal_keymaps()
@@ -67,5 +79,7 @@ return {
     nnoremap("<leader>tt", ":ToggleTerm direction=float<CR>")
     nnoremap("<leader>tv", ":ToggleTerm direction=vertical<CR>")
     nnoremap("<leader>tp", _PYTHON_TOGGLE)
+    nnoremap("<leader>tg", _GITUI_TOGGLE)
+    nnoremap("<leader>ts", _SWIPL_TOGGLE)
   end
 }

@@ -4,33 +4,8 @@ local check_backspace = function()
 end
 
 --   פּ ﯟ   some other good icons
-local kind_icons = {
-  Text = "",
-  Method = "m",
-  Function = "",
-  Constructor = "",
-  Field = "",
-  Variable = "",
-  Class = "",
-  Interface = "",
-  Module = "",
-  Property = "",
-  Unit = "",
-  Value = "",
-  Enum = "",
-  Keyword = "",
-  Snippet = "",
-  Color = "",
-  File = "",
-  Reference = "",
-  Folder = "",
-  EnumMember = "",
-  Constant = "",
-  Struct = "",
-  Event = "",
-  Operator = "",
-  TypeParameter = "",
-}
+local icons = require("endoxide.icons")
+local kind_icons = icons.kind
 
 local border = {
   { "╭", "CmpBorder" },
@@ -45,7 +20,7 @@ local border = {
 
 return {
   "hrsh7th/nvim-cmp", -- The completion plugin
-  event = "InsertEnter",
+  -- event = "InsertEnter",
 
   dependencies = {
     "hrsh7th/cmp-buffer", -- buffer completions
@@ -64,12 +39,14 @@ return {
 
     local config = {
       window = {
-        -- documentation = {
-        --   border = border,
-        -- },
-        -- completion = {
-        --   border = border,
-        -- },
+        documentation = {
+          border = border,
+          winhighlight = "Normal:Pmenu"
+        },
+        completion = {
+          border = border,
+          winhighlight = "Normal:Pmenu"
+        },
       },
       snippet = {
         expand = function(args)
@@ -79,13 +56,14 @@ return {
       mapping = {
         ["<C-k>"] = cmp.mapping.select_prev_item(),
         ["<C-j>"] = cmp.mapping.select_next_item(),
-        ["<C-u>"] = cmp.mapping(cmp.mapping.scroll_docs(-1), { "i", "c" }),
-        ["<C-d>"] = cmp.mapping(cmp.mapping.scroll_docs(1), { "i", "c" }),
+        ["<C-u>"] = cmp.mapping(cmp.mapping.scroll_docs(-5), { "i", "c" }),
+        ["<C-d>"] = cmp.mapping(cmp.mapping.scroll_docs(5), { "i", "c" }),
         ["<C-Space>"] = cmp.mapping(cmp.mapping.complete(), { "i", "c" }),
         ["<C-y>"] = cmp.config.disable,
         -- leaves selected entry on menu close, otherwise returns to normal if 
         -- no entry is slected
         ["<S-Tab>"] = cmp.mapping(function(fallback)
+          print("closed")
           if cmp.visible() then
             local entry = cmp.get_selected_entry()
             if not entry then
@@ -166,5 +144,7 @@ return {
         native_menu = false,
       },
     }
+
+    cmp.setup(config)
   end
 }

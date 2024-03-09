@@ -50,6 +50,6 @@ autocmd({ "VimLeave" }, {
 --   end
 -- })
 
-vim.cmd([[ 
-  autocmd BufWritePost work.tex :VimtexCompile
-]])
+-- vim.cmd([[ 
+--   autocmd BufWritePost work.tex :VimtexCompile
+-- ]])

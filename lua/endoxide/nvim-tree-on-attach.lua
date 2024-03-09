@@ -10,6 +10,7 @@ local nnoremap = require("endoxide.keymap").nnoremap
 
 local function on_attach(bufnr)
   local api = require('nvim-tree.api')
+  local tree = require("nvim-tree")
 
   local function opts(desc)
     return { desc = 'nvim-tree: ' .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
@@ -81,10 +82,11 @@ local function on_attach(bufnr)
   -- Mappings migrated from view.mappings.list
   --
   -- You will need to insert "your code goes here" for any mappings with a custom action_cb
-  vim.keymap.set('n', 'l', api.node.open.edit, opts('Open'))
-  vim.keymap.set('n', '<CR>', api.node.open.edit, opts('Open'))
-  vim.keymap.set('n', 'h', api.node.navigate.parent_close, opts('Close Directory'))
-  vim.keymap.set('n', 'v', api.node.open.vertical, opts('Open: Vertical Split'))
+  nnoremap('l', node.open.edit, opts('Open'))
+  nnoremap('<CR>', node.open.edit, opts('Open'))
+  nnoremap('h', node.navigate.parent_close, opts('Close Directory'))
+  nnoremap('v', node.open.vertical, opts('Open: Vertical Split'))
+  -- nnoremap('z', function () tree.system_open({cmd = "zathura"}) end, opts('Open Zathura'))
 
 end
 

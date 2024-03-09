@@ -66,9 +66,17 @@ function ColorMyPencils()
     bg = "none"
   })
 
-  -- hl("netrwDir", {
-  --     fg = "#5eacd3"
-  -- })
+  hl("Pmenu", {
+    bg = "None"
+  })
+
+  hl("NormalFloat", {
+    bg = "None"
+  })
+
+  hl("FloatBorder", {
+    bg = "None"
+  })
 
 end
 
