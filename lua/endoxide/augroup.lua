@@ -37,6 +37,14 @@ autocmd({ "VimLeave" }, {
   end,
 })
 
+autocmd({"BufRead"}, {
+  group = endoxideGroup,
+  pattern = "*.pro",
+  callback = function()
+    vim.cmd(":set filetype=prolog")
+  end,
+})
+
 -- open personal latex 
 -- autocmd({"BufRead"}, {
 --   group = endoxideGroup,

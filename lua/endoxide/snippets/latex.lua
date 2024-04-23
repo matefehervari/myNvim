@@ -552,10 +552,14 @@ local environment_snippets = {
     fmt_angle("\\begin{enumerate}\n  <>\n\\end{enumerate}", { i(1) })),
   s({ trig = "exam"},
     fmt_angle("\\begin{examquestion}{<>}{<>}{<>}\n<>\n\\end{examquestion}", { i(1), i(2), i(3), i(4) })),
+  s({ trig = "listing"},
+    fmt_angle("\\begin{lstlisting}\n<>\n\\end{lstlisting}", { i(1) })),
   s({ trig = "RTP"},
     fmt_angle("\\begin{RTP}{<>}\n  <>\n\\end{RTP}", { i(1), i(2) })),
   s({ trig = "cases", condition=notMath},
     fmt_angle("\\begin{proofcase}\n  <>\n\\end{proofcase}", { i(1) })),
+  s({ trig = "center", condition=notMath},
+    fmt_angle("\\begin{center}\n  <>\n\\end{center}", { i(1) })),
 }
 
 ------------------------------------ Subscript snippets
@@ -650,8 +654,6 @@ local misc_snippets = {
     fmt_angle("\\ulcorner <> \\urcorner", { i(1) })),
   s({ trig = "lco", snippetType = "autosnippet", condition = math },
     fmt_angle("\\llcorner <> \\lrcorner", { i(1) })),
-  s({ trig = [["]], snippetType = "autosnippet"},
-    fmt_angle("``<>''", { i(1) })),
 
   -- note the rhs brackets are omitted as it is completed by autopairs
   s({ trig = "lr(", snippetType = "autosnippet", condition = math },
@@ -698,6 +700,22 @@ local misc_snippets = {
     fmt_angle("\\boxc{<>}", { i(1) })),
   s({ trig = "boxed"},
     fmt_angle("\\boxed{<>}", { i(1) })),
+  s({ trig = "(%d+)marks",  -- add subscript for variables
+    snippetType = "autosnippet",
+    regTrig = true,
+    wordTrig = false },
+
+      fmt_angle([[\signed{[<> marks]}]],
+        { f(function(_, parent)
+          return parent.snippet.captures[1]
+        end),
+        })
+  ),
+  s({ trig = "1mark",
+    snippetType = "autosnippet",
+    regTrig = true,
+    wordTrig = false },
+    t("\\signed{[1 mark]}")),
 
   -- Semantics
   s({ trig = "tfun", snippetType = "autosnippet", condition = math },
