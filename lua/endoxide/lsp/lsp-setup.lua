@@ -1,9 +1,7 @@
-local lspconfig = require("lspconfig")
 local nnoremap = require("endoxide.keymap").nnoremap
 
 local M = {}
 
--- TODO: backfill this to template
 M.setup = function()
   local signs = {
     { name = "DiagnosticSignError", text = "" },

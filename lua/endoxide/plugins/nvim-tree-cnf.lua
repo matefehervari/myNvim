@@ -1,20 +1,3 @@
--- local nnoremap = require("endoxide.keymap").nnoremap
---
--- local on_attach = function(bufnr)
---   local api = require('nvim-tree.api')
---
---   local function opts(desc)
---     return { desc = 'nvim-tree: ' .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
---   end
---
---   nnoremap('l', api.node.open.edit, opts('Open'))
---   nnoremap('<CR>', api.node.open.edit, opts('Open'))
---   nnoremap('h', api.node.navigate.parent_close, opts('Close Directory'))
---   nnoremap('v', api.node.open.vertical, opts('Open: Vertical Split'))
--- end
-
-local on_attach = require("endoxide.nvim-tree-on-attach")
-
 return {
   "kyazdani42/nvim-tree.lua",
 
@@ -24,9 +7,17 @@ return {
 
   config = function()
     local nvim_tree = require("nvim-tree")
+    local api = require("nvim-tree.api")
+    local on_attach = require("endoxide.util.nvim-tree-on-attach")
 
-    -- local on_attach = require("endoxide.nvim-tree-on-attach")
+    local nnoremap = require("endoxide.keymap").nnoremap
 
+    -- keymaps
+    nnoremap("<leader>e", function ()
+      api.tree.toggle()
+    end)
+
+    -- config
     local config = {
       on_attach = on_attach,
       disable_netrw = true,

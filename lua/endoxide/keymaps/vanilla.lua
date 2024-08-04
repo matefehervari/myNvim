@@ -7,7 +7,6 @@ local xnoremap = Remap.xnoremap
 local cnoremap = Remap.cnoremap
 local tnoremap = Remap.tnoremap
 local snoremap = Remap.snoremap
-local nmap = Remap.nmap
 
 nnoremap("<space>", "<Nop>")
 
@@ -69,7 +68,7 @@ vnoremap("<", "<gv")
 xnoremap("<leader>p", [["_dP]])
 
 -- replaces words currently hovered with keyword boundaries set
-nnoremap("<leader>r", ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>")
+nnoremap("<leader>rr", ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>")
 
 -- move half pages with recentre
 nnoremap("<C-d>", "<C-d>zz")

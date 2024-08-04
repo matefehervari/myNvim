@@ -1,6 +1,5 @@
 local fn = vim.fn
 
-
 local lazypath = fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   LAZY_BOOTSTRAP = fn.system({
@@ -19,13 +18,9 @@ local plugins = {
   {import = "endoxide.plugins"},
 
   "windwp/nvim-ts-autotag", -- Autotags
-  "numToStr/Comment.nvim", -- Easily comment stuff
 
-  -- lualine
-  "nvim-lualine/lualine.nvim",
 
   -- snippets
-  "L3MON4D3/LuaSnip", --snippet engine
   "rafamadriz/friendly-snippets", -- a bunch of snippets to use
 
   -- colorscheme
@@ -42,11 +37,6 @@ local plugins = {
   -- Telescope
   "nvim-telescope/telescope-media-files.nvim",
 
-  -- TreeSitter
-  {
-    "nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate",
-  },
 
   -- use "lewis6991/spellsitter.nvim"
   "JoosepAlviste/nvim-ts-context-commentstring",
@@ -58,17 +48,12 @@ local plugins = {
      dependencies = {"mfussenegger/nvim-dap"}
   },
 
-  -- sessions
-  "olimorris/persisted.nvim",
-
 -- Python
   "mfussenegger/nvim-dap-python",
 
   -- Java
   "mfussenegger/nvim-jdtls",
 
-  -- Latex
-  "lervag/vimtex",
 
   -- Rust
   "simrat39/rust-tools.nvim",

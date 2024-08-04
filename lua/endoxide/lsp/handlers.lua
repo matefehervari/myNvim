@@ -1,44 +1,35 @@
 -- Register a handler that will be called for all installed servers.
 -- Alternatively, you may also register handlers on specific server instances instead
 return function(server_name)
-  local opts = {
+  if server_name == "jdtls" then goto continue end -- server alrady checked in handlers
+
+  local forced_opts = {
     on_attach = require("endoxide.lsp.lsp-setup").on_attach,
     capabilities = require("endoxide.lsp.lsp-setup").capabilities,
   }
 
+  local opts = {};
+
   if server_name == "jsonls" then
-    local jsonls_opts = require("endoxide.lsp.settings.jsonls")
-    opts = vim.tbl_deep_extend("force", jsonls_opts, opts)
-  end
-
-  if server_name == "lua_ls" then
-    local sumneko_opts = require("endoxide.lsp.settings.sumneko_lua")
-    opts = vim.tbl_deep_extend("force", sumneko_opts, opts)
-  end
-
-  if server_name == "pyright" then
-    local pyright_opts = require("endoxide.lsp.settings.pyright")
-    opts = vim.tbl_deep_extend("force", pyright_opts, opts)
-  end
-
-  if server_name == "ocamllsp" then
-    local ocamllsp_opts = require("endoxide.lsp.settings.ocaml")
-    opts = vim.tbl_deep_extend("force", ocamllsp_opts, opts)
-  end
-
-  if server_name == "jdtls" then goto continue end -- server alrady checked in handlers
-  if server_name == "rust_analyzer" then  -- let rust-tools setup lspconfig
+    opts = require("endoxide.lsp.settings.jsonls")
+  elseif server_name == "lua_ls" then
+    opts = require("endoxide.lsp.settings.lua_ls")
+  elseif server_name == "pyright" then
+    opts = require("endoxide.lsp.settings.pyright")
+  elseif server_name == "ocamllsp" then
+    opts = require("endoxide.lsp.settings.ocaml")
+  elseif server_name == "tsserver" then
+    opts = require("endoxide.lsp.settings.tsserver")
+  elseif server_name == "rust_analyzer" then -- let rust-tools setup lspconfig
     local rust_analyzer_opts = require("endoxide.lsp.settings.rust_analyzer")
-    opts = vim.tbl_deep_extend("force", rust_analyzer_opts, opts)
+    opts = vim.tbl_deep_extend("force", rust_analyzer_opts, forced_opts)
 
-    -- require("endoxide.lsp.rust-tools-setup")
     local rt = require("rust-tools")
-    rt.setup({server = opts})
+    rt.setup({ server = opts })
     goto continue
   end
 
-  -- This setup() function is exactly the same as lspconfig's setup function.
-  -- Refer to https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
+  opts = vim.tbl_deep_extend("force", opts, forced_opts)
 
   require("lspconfig")[server_name].setup(opts)
   ::continue::

@@ -1,5 +1,7 @@
 vim.g.endoxide_colorscheme = "tokyonight"
 
+local hl = require("endoxide.util.highlights").hl
+
 function ColorMyPencils()
   -- vim.g.gruvbox_contrast_dark = 'hard'
   vim.g.tokyonight_transparent_sidebar = true
@@ -7,15 +9,7 @@ function ColorMyPencils()
   -- vim.g.gruvbox_invert_selection = '0'
   vim.opt.background = "dark"
 
-  local status_ok, _ = pcall(vim.cmd, "colorscheme " .. vim.g.endoxide_colorscheme)
-  if not status_ok then
-    print("colorscheme" .. vim.g.endoxide_colorscheme .. "not found!")
-    return
-  end
-
-  local hl = function(thing, opts)
-    vim.api.nvim_set_hl(0, thing, opts)
-  end
+  vim.cmd("colorscheme " .. vim.g.endoxide_colorscheme)
 
   hl("SignColumn", {
     bg = "none",
@@ -27,7 +21,7 @@ function ColorMyPencils()
   })
 
   hl("VirtualColumn", {
-    fg="#111111"
+    fg = "#111111"
   })
 
   hl("CursorLineNR", {
@@ -78,6 +72,10 @@ function ColorMyPencils()
     bg = "None"
   })
 
+  hl("LspInlayHint", {
+    fg = "#545c7e",
+    bg = "none",
+  })
 end
 
 ColorMyPencils()

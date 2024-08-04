@@ -8,11 +8,6 @@ if not dap_ui_status_ok then
     return
 end
 
-local dap_python_status_ok, dap_python = pcall(require, "dap-python")
-if not dap_python_status_ok then
-    return
-end
-
 local home = os.getenv("HOME")
 -- dap_python.setup(home .. "/.virtualenvs/debugpy/bin/python3.10")
 
@@ -20,9 +15,9 @@ local home = os.getenv("HOME")
 local python_ver = "python3.10"
 
 dap.adapters.python = {
-  type = 'executable';
-  command = home .. "/.virtualenvs/debugpy/bin/python3.10";
-  args = { '-m', 'debugpy.adapter' };
+  type = 'executable',
+  command = home .. "/.virtualenvs/debugpy/bin/python3.10",
+  args = { '-m', 'debugpy.adapter' },
 }
 
 dap.configurations.python = {

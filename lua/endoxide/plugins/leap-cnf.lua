@@ -1,7 +1,6 @@
 return {
   "ggandor/leap.nvim",
   config = function ()
-    local leap = require("leap")
     local k = require("endoxide.keymap")
     local nnoremap = k.nnoremap
 

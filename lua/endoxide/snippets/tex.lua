@@ -539,7 +539,7 @@ local environment_snippets = {
   s({ trig = "array", snippetType = "autosnippet", condition = math_not_escaped },
     fmt_angle("\\begin{array}{<>}\n  <>\n\\end{array}", { i(1), i(2) })),
   s(
-    { trig = "beg", snippetType = "autosnippet", condition = not_escaped},
+    { trig = "beg", condition = not_escaped},
     fmt_angle("\\begin{<>}\n  <>\n\\end{<>}",
       { i(1, "env"),
         i(3),
@@ -550,6 +550,8 @@ local environment_snippets = {
   ),
   s({ trig = "enum", condition=notMath},
     fmt_angle("\\begin{enumerate}\n  <>\n\\end{enumerate}", { i(1) })),
+  s({ trig = "itemize", condition=notMath},
+    fmt_angle("\\begin{itemize}\n  <>\n\\end{itemize}", { i(1) })),
   s({ trig = "exam"},
     fmt_angle("\\begin{examquestion}{<>}{<>}{<>}\n<>\n\\end{examquestion}", { i(1), i(2), i(3), i(4) })),
   s({ trig = "listing"},
@@ -716,6 +718,8 @@ local misc_snippets = {
     regTrig = true,
     wordTrig = false },
     t("\\signed{[1 mark]}")),
+  s({ trig = "lsti", snippetType = "autosnippet", condition = notMath },
+    fmt_angle("\\lstinline{<>}", { i(1) })),
 
   -- Semantics
   s({ trig = "tfun", snippetType = "autosnippet", condition = math },

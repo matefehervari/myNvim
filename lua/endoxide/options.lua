@@ -51,6 +51,7 @@ vim.opt.updatetime = 50
 -- Don't pass messages to |ins-completion-menu|.
 vim.opt.shortmess:append("c")
 
+vim.opt.mousemoveevent = true
 -- vim.g.matchparen_timeout = 2
 -- vim.g.matchparen_insert_timeout = 2
 -- vim.opt.loaded_matchparen = 1
@@ -60,3 +61,4 @@ vim.g.colorcolumn = "80"
 vim.g.mapleader = " "
 
 vim.cmd "set whichwrap+=<,>,[,],h,l"
+

@@ -14,6 +14,7 @@ local MATH_ENVIRONMENTS = {
   array = true,
   alignat = true,
 }
+
 local MATH_NODES = {
   displayed_equation = true,
   inline_formula = true,
