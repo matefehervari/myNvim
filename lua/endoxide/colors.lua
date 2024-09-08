@@ -1,4 +1,4 @@
-vim.g.endoxide_colorscheme = "tokyonight"
+-- vim.g.endoxide_colorscheme = "tokyonight"
 
 local hl = require("endoxide.util.highlights").hl
 
@@ -9,7 +9,7 @@ function ColorMyPencils()
   -- vim.g.gruvbox_invert_selection = '0'
   vim.opt.background = "dark"
 
-  vim.cmd("colorscheme " .. vim.g.endoxide_colorscheme)
+  -- vim.cmd("colorscheme " .. vim.g.endoxide_colorscheme)
 
   hl("SignColumn", {
     bg = "none",

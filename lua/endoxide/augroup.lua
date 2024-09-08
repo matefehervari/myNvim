@@ -10,10 +10,10 @@ local endoxideGroup = augroup('endoxide', {})
 local autocmd = vim.api.nvim_create_autocmd
 
 -- latex spell checking
-autocmd({"BufRead"}, {
+autocmd({ "BufRead" }, {
   group = endoxideGroup,
   pattern = "*.tex",
-  callback = function ()
+  callback = function()
     vim.cmd(":setlocal spell spelllang=en")
   end
 })
@@ -21,14 +21,29 @@ autocmd({"BufRead"}, {
 -- workaround for un/core handle error message
 autocmd({ "VimLeave" }, {
   callback = function()
-    vim.fn.jobstart('notify-send ""', {detach=true})
+    vim.fn.jobstart('notify-send ""', { detach = true })
   end,
 })
 
-autocmd({"BufRead"}, {
+autocmd({ "BufRead" }, {
   group = endoxideGroup,
   pattern = "*.pro",
   callback = function()
     vim.cmd(":set filetype=prolog")
   end,
+})
+
+autocmd({ "BufRead" }, {
+  group = endoxideGroup,
+  pattern = "*.rasi",
+  callback = function()
+    vim.cmd(":set filetype=rasi")
+  end,
+})
+
+autocmd("LspAttach", {
+  group = endoxideGroup,
+  callback = function()
+    vim.lsp.inlay_hint.enable()
+  end
 })

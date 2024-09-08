@@ -34,7 +34,6 @@ return {
         max_prefix_length = 30,   -- prefix used when a buffer is de-duplicated
         tab_size = 21,
         diagnostics = "nvim_lsp", -- false | "nvim_lsp" | "coc",
-        diagnostics_update_in_insert = true,
         diagnostics_indicator = function(count, level)
           local icon = (level:match("error") and diagnostics.Error) or
               (level:match("warning") and diagnostics.Warning) or
@@ -76,6 +75,11 @@ return {
 
         background = {
           fg = "#888888", -- { attribute = "fg", highlight = "Normal" },
+          bg = { attribute = "bg", highlight = "Normal" },
+        },
+
+        buffer = {
+          fg = { attribute = "fg", highlight = "TabLine" },
           bg = { attribute = "bg", highlight = "Normal" },
         },
 
@@ -211,6 +215,9 @@ return {
     }
 
     bufferline.setup(config)
+
+    -- update diagnostics on insert
+    vim.diagnostic.config({ update_in_insert = true })
 
     -- highlight icons
     local autocmd = vim.api.nvim_create_autocmd

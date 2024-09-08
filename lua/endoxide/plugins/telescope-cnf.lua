@@ -86,7 +86,7 @@ return {
         media_files = {
           -- filetypes whitelist
           filetypes = { "png", "webp", "jpg", "jpeg", "pdf" },
-          find_cmd = "rg"   -- find command (defaults to `fd`)
+          find_cmd = "rg" -- find command (defaults to `fd`)
         }
       },
     }
@@ -101,7 +101,7 @@ return {
     local Remap = require("endoxide.keymap")
     local nnoremap = Remap.nnoremap
 
-    local root_markers = { ".git", "mvnw", "gradlew", "pom.xml", "build.gradle", "pyproject.toml"}
+    local root_markers = { ".git", "mvnw", "gradlew", "pom.xml", "build.gradle", "pyproject.toml" }
     nnoremap("<leader>ff", function()
         local root_dir = fu.find_root(root_markers)
         if root_dir == "" then
@@ -126,5 +126,25 @@ return {
 
     nnoremap("<leader>fq", ":Telescope persisted<CR>",
       { desc = "Search through sessions" })
+
+    -- colors
+    local hl = require("endoxide.util.highlights").hl
+    hl("TelescopeNormal",
+      {
+        fg = "#ffffff",
+        bg = "none"
+      })
+
+    hl("TelescopeBorder",
+      {
+        fg = "#27a1b9",
+        bg = "none"
+      })
+
+    hl("TelescopePromptBorder",
+      {
+        fg = "#ff9e64",
+        bg = "none"
+      })
   end
 }

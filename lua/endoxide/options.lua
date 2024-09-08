@@ -59,6 +59,7 @@ vim.opt.mousemoveevent = true
 vim.g.colorcolumn = "80"
 
 vim.g.mapleader = " "
+vim.g.maplocalleader = " "
 
 vim.cmd "set whichwrap+=<,>,[,],h,l"
 

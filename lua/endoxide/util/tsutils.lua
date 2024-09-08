@@ -24,10 +24,12 @@ local function get_node_at_cursor()
   local cursor = vim.api.nvim_win_get_cursor(0)
   local cursor_range = { cursor[1] - 1, cursor[2] }
   local buf = vim.api.nvim_get_current_buf()
-  local ok, parser = pcall(ts.get_parser, buf, "latex")
-  if not ok or not parser then
-    return
-  end
+  local parser = ts.get_parser(0)
+  -- local ok, parser = pcall(ts.get_parser, buf, "latex")
+  -- print(ok)
+  -- if not ok or not parser then
+  --   return
+  -- end
   local root_tree = parser:parse()[1]
   local root = root_tree and root_tree:root()
 
@@ -63,6 +65,7 @@ function M.in_mathzone()
     local node = get_node_at_cursor()
     while node do
       if MATH_NODES[node:type()] then
+        print("in math node")
         return true
       elseif node:type() == "text_mode" then -- \text{} inside mathzone sohuld be treated as text
         return false

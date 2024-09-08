@@ -1,7 +1,7 @@
 require("endoxide.options")
 require("endoxide.keymaps")
 require("endoxide.augroup")
+-- require("endoxide.colors")
 require("endoxide.lazy")
 require("endoxide.lsp")
-require("endoxide.colors")
 require("endoxide.dap-setup")

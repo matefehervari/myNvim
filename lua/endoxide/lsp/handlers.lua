@@ -20,6 +20,8 @@ return function(server_name)
     opts = require("endoxide.lsp.settings.ocaml")
   elseif server_name == "tsserver" then
     opts = require("endoxide.lsp.settings.tsserver")
+  elseif server_name == "omnisharp" then
+    opts = require("endoxide.lsp.settings.omnisharp")
   elseif server_name == "rust_analyzer" then -- let rust-tools setup lspconfig
     local rust_analyzer_opts = require("endoxide.lsp.settings.rust_analyzer")
     opts = vim.tbl_deep_extend("force", rust_analyzer_opts, forced_opts)
