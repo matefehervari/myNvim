@@ -13,14 +13,9 @@ null_ls.setup {
     debug = false,
     sources = {
         formatting.ruff,
-        -- line length error code
-        -- diagnostics.flake8.with { extra_args = {"--extend-ignore=E501,E203"}},
-        -- diagnostics.spellcheck,
-        -- diagnostics.cspell.with{
-        --   filetypes = {"tex"}
-        -- },
-        -- code_actions.cspell.with{
-        --   filetypes = {"tex"}
-        -- },
+        diagnostics.eslint_d.with({
+          diagnostics_format = '[eslint] #{m}\n{#c}'
+        }),
+        diagnostics.fish,
     },
 }
