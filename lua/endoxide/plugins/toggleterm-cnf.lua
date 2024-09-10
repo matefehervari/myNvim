@@ -14,6 +14,9 @@ return {
       insert_mappings = true,
       persist_size = true,
       close_on_exit = true,
+      env = {
+        TOGGLETERM = "1"
+      },
       highlights = {
         Normal = {
           guibg = "None",
