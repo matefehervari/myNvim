@@ -2,7 +2,9 @@ return {
   "nvim-telescope/telescope.nvim",
   dependencies = {
     "nvim-lua/plenary.nvim", -- Useful lua functions used ny lots of plugins
-    { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+    { "nvim-telescope/telescope-fzf-native.nvim", build = "make", config = function ()
+      require('telescope').load_extension("fzf")
+    end },
     "kyazdani42/nvim-web-devicons",
   },
 
@@ -93,7 +95,6 @@ return {
     telescope.setup(config)
 
     -- load extensions
-    telescope.load_extension("fzf")
     telescope.load_extension('media_files')
     telescope.load_extension('persisted')
 
