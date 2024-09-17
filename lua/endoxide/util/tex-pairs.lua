@@ -31,8 +31,8 @@ local latex_deletion_symbols = {
   [[\left(<>\right)]],
   [[\left( <> \right)]],
 
-  [[\left{<>\right}]],
-  [[\left{ <> \right}]],
+  [[\left\{<>\right\}]],
+  [[\left\{ <> \right\}]],
 
 
   [[\langle<>\rangle]],

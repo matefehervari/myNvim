@@ -711,7 +711,7 @@ local misc_snippets = {
         return matched
       end
     },
-    fmt_angle("\\left{ <> \\right}", { i(1) })),
+    fmt_angle("\\left\\{ <> \\right\\}", { i(1) })),
 
   postfix({
       trig = "[",
@@ -729,7 +729,7 @@ local misc_snippets = {
   s({ trig = "lr|", snippetType = "autosnippet", condition = math },
     fmt_angle("\\left| <> \\right|", { i(1) })),
   s({ trig = "lr{", snippetType = "autosnippet", condition = prev_math() },
-    fmt_angle("\\left{ <> \\right}", { i(1) })),
+    fmt_angle("\\left\\{ <> \\right\\}", { i(1) })),
   s({ trig = "lr[", snippetType = "autosnippet", condition = math },
     fmt_angle("\\left[ <> \\right]", { i(1) })),
   s({ trig = "lra", snippetType = "autosnippet", condition = math },
