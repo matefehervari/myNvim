@@ -1,3 +1,5 @@
+local tsutils = require("endoxide.util.tsutils")
+
 vim.cmd([[
     augroup endoxide
         autocmd BufRead * lcd %:p:h
@@ -15,6 +17,16 @@ autocmd({ "BufRead" }, {
   pattern = "*.tex",
   callback = function()
     vim.cmd(":setlocal spell spelllang=en")
+  end
+})
+
+-- latex math zone detection
+autocmd({ "CursorMoved", "CursorMovedI" }, {
+  group = endoxideGroup,
+  pattern = "*.tex",
+  callback = function()
+    vim.g.prev_tex_in_math_zone = vim.g.tex_in_math_zone
+    vim.g.tex_in_math_zone = tsutils.in_mathzone()
   end
 })
 

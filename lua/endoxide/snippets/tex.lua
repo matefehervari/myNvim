@@ -17,12 +17,17 @@ end
 
 -- conditions
 local function math()
-  -- return vim.api.nvim_eval("vimtex#syntax#in_mathzone()") == 1
-  return tsutil.in_mathzone()
+  return vim.g.tex_in_math_zone
 end
 
 local function notMath()
   return not math()
+end
+
+-- Some snippets violate math mode detection before the snippet is triggered,
+-- this should be used instead of math() in such cases
+local function prev_math()
+  return vim.g.prev_tex_in_math_zone
 end
 
 local function not_escaped(str, symbol)
@@ -30,11 +35,11 @@ local function not_escaped(str, symbol)
 end
 
 local function math_not_escaped(str, symbol)
-    return math() and not_escaped(str, symbol)
+  return math() and not_escaped(str, symbol)
 end
 
 local function math_escaped(str, symbol)
-    return math() and is_escaped(str, symbol)
+  return math() and is_escaped(str, symbol)
 end
 --
 
@@ -44,15 +49,15 @@ local function insertAll(a, b)
   end
 end
 
-local function has_value (tbl, val)
-    for idx = 1,#tbl do
-        -- We grab the first index of our sub-table instead
-        if tbl[idx] == val then
-            return true
-        end
+local function has_value(tbl, val)
+  for idx = 1, #tbl do
+    -- We grab the first index of our sub-table instead
+    if tbl[idx] == val then
+      return true
     end
+  end
 
-    return false
+  return false
 end
 
 ------------------------------------------------- Math mode environments
@@ -105,12 +110,13 @@ local GREEK =
   "Upsilon", "varphi", "phi", "Phi", "chi", "psi", "Psi", "omega", "Omega" }
 
 local SYMBOL =
-{ "hbar", "ell", "nabla", "infty", "dots", "leftrightarrow", "uparrow", "downarrow", "mapsto", "setminus", "mid", "bigcap", "bigcup", "cap",
+{ "hbar", "ell", "nabla", "infty", "dots", "leftrightarrow", "uparrow", "downarrow", "mapsto", "setminus", "mid",
+  "bigcap", "bigcup", "cap",
   "cup", "land", "lor", "subseteq", "subset", "implies", "impliedby", "iff", "exists", "forall", "equiv", "square", "neq",
   "geq", "leq", "gg", "ll", "sim", "simeq", "approx", "propto", "cdot", "oplus", "otimes", "times", "star", "perp", "det",
-  "exp", "ln", "log", "partial", "vdash", "triangleq", "twoheadrightarrow", "uplus", "Longrightarrow", "therefore"}
+  "exp", "ln", "log", "partial", "vdash", "triangleq", "twoheadrightarrow", "uplus", "Longrightarrow", "therefore" }
 
-local SHORT_SYMBOL = { "to", "pm", "mp", "in"}
+local SHORT_SYMBOL = { "to", "pm", "mp", "in" }
 
 local ALL_SYMBOLS = {}
 insertAll(ALL_SYMBOLS, GREEK)
@@ -121,15 +127,47 @@ local SYMBOLS = {}
 insertAll(SYMBOLS, SYMBOL)
 insertAll(SYMBOLS, SHORT_SYMBOL)
 
+local CUSTOM_SPACE_AFTER_CHARS = {
+  "}", ">", "]", ")",
+}
+
+local ESCAPE_CUSTOM_CHARS = {
+  ")"
+}
+
 local function toTexCommand(symbol)
   return s(
-    { trig = "(" .. symbol .. ")", snippetType = "autosnippet", 
-    condition = math_not_escaped, -- line_to_cursor and matched trigger correspond to str and symbol
-    regTrig = true },  -- wordTrig = false
+    {
+      trig = "(" .. symbol .. ")",
+      snippetType = "autosnippet",
+      condition = math_not_escaped, -- line_to_cursor and matched trigger correspond to str and symbol
+      regTrig = true
+    },                              -- wordTrig = false
     { f(function(_, s)
       return "\\" .. s.captures[1]
     end) }
   )
+end
+
+local function customSymbolInsertSpaceTrig(trigPattern)
+  return function(symbolName)
+    local symbolPattern = symbolName
+    if vim.tbl_contains(ESCAPE_CUSTOM_CHARS, symbolName) then
+      symbolPattern = "%" .. symbolName
+    end
+    return s({
+      trig = symbolPattern .. "(" .. trigPattern .. ")",
+      snippetType = "autosnippet",
+      condition = math,
+      regTrig = true,
+      wordTrig = false,
+      priority = 999,
+    }, {
+      f(function(_, s)
+        return symbolName .. " " .. s.captures[1]
+      end)
+    })
+  end
 end
 
 local function symbolInsertSpaceTrig(trig)
@@ -154,10 +192,7 @@ local function symbolInsertSpaceTrig(trig)
 end
 
 local symbolModifierMap = {
-  sr = [[<>^{2}]],
-  cb = [[<>^{3}]],
   invs = [[<>^{-1}]],
-  rd = [[<>^{<>}]],
   hat = [[\hat{<>}]],
   dot = [[\dot{<>}]],
   bar = [[\bar{<>}]],
@@ -170,6 +205,7 @@ local symbolModifierMap = {
 local function getSymbolModifierSnippet(symbolName, modifier)
   local texsymb = "\\" .. symbolName
   local match = texsymb .. " "
+
   return postfix({
       trig = modifier,
       snippetType = "autosnippet",
@@ -183,16 +219,20 @@ local function getSymbolModifierSnippet(symbolName, modifier)
 end
 
 local function getPatternModifierSnippet(pattern, modifier)
+  local priority = 1000
+  local trig = modifier
+  if modifier == "ddot" then
+    priority = 1001
+    trig = "_{d} ot"
+  end
+
   return postfix({
-      trig = modifier,
+      trig = trig,
       snippetType = "autosnippet",
       match_pattern = pattern,
       regTrig = true,
       condition = math,
-      -- condition = function(line_to_cursor, matched_trigger)
-      --   local endsWithSymbol = (line_to_cursor:sub(-(#pattern + #matched_trigger)) == (pattern .. matched_trigger))
-      --   return math() and endsWithSymbol
-      -- end
+      priority = priority,
     },
     fmt_angle(
       symbolModifierMap[modifier],
@@ -231,7 +271,7 @@ local operation_fmts = {
 
 local operation_snippets = {
   s({ trig = "_", snippetType = "autosnippet", condition = math, wordTrig = false }, fmt_angle([[_{<>}]], { i(1) })),
-  s({ trig = "te", snippetType = "autosnippet", condition = math_not_escaped}, 
+  s({ trig = "te", snippetType = "autosnippet", condition = math_not_escaped },
     fmt_angle("\\text{<>}", { i(1) })),
 }
 for trig, nodes in pairs(operation_fmts) do
@@ -248,9 +288,9 @@ local symbolic_trig_symbol_nodes = {
   ["-+"]     = { t("\\mp") },
   ["..."]    = { t("\\dots") },
   ["->"]     = { t("\\to") },
-  ["\\to>"]     = { t("\\twoheadrightarrow") },
-  ["\\to\\"]     = { t("\\uparrow") },
-  ["\\to/"]     = { t("\\downarrow") },
+  ["\\to>"]  = { t("\\twoheadrightarrow") },
+  ["\\to\\"] = { t("\\uparrow") },
+  ["\\to/"]  = { t("\\downarrow") },
   ["!>"]     = { t("\\mapsto") },
   ["|-"]     = { t("\\vdash") },
   ["\\\\\\"] = { t("\\setminus") },
@@ -295,10 +335,10 @@ local symbols_nodes = {
   ["mcal"]         = fmt_angle([[\mathcal{<>}]], i(1)),
   ["mbb"]          = fmt_angle([[\mathbb{<>}]], i(1)),
   ["ell"]          = { t("\\ell") },
-  ["treq"]          = { t("\\triangleq") },
-  ["f\\ora \\ll"]          = { t("\\forall") },
+  ["treq"]         = { t("\\triangleq") },
+  ["f\\ora \\ll"]  = { t("\\forall") },
   ["thf"]          = { t("\\therefore") },
-  ["ora"]          = fmt_angle([[\ora{<>}]], {i(1)}),
+  ["ora"]          = fmt_angle([[\ora{<>}]], { i(1) }),
 
   ["AA"]           = { t("\\mathbb{A}") },
   ["BB"]           = { t("\\mathbb{B}") },
@@ -366,8 +406,6 @@ local symbol_snippets = {
   -- conflicting symbols with "invs" that end in 'i'
   s({ trig = "\\xi nvs", snippetType = "autosnippet", condition = math, priority = 1001, wordTrig = false },
     { t([[x^{-1}]]) }),
-  s({ trig = "\\Xi nvs", snippetType = "autosnippet", condition = math, priority = 1001, wordTrig = false },
-    { t([[X^{-1}]]) }),
   s({ trig = "\\phi nvs", snippetType = "autosnippet", condition = math, priority = 1001, wordTrig = false },
     { t([[ph^{-1}]]) }),
   s({ trig = "\\Phi nvs", snippetType = "autosnippet", condition = math, priority = 1001, wordTrig = false },
@@ -384,6 +422,8 @@ local symbol_snippets = {
     { t([[p^{-1}]]) }),
   s({ trig = "e\\xi sts", snippetType = "autosnippet", condition = math, priority = 1001, wordTrig = false },
     { t([[\exists]]) }),
+  s({ trig = "\\xii", snippetType = "autosnippet", condition = math, priority = 1001, wordTrig = false },
+    { t([[x_{i}]]) }),
 }
 
 
@@ -394,14 +434,6 @@ end
 for trig, nodes in pairs(symbols_nodes) do
   table.insert(symbol_snippets, symbolNodesToSnippets(trig, nodes, true))
 end
-
--- {trigger: "xnn", replacement: "x_{n}", options: "mA"},
--- {trigger: "xii", replacement: "x_{i}", options: "mA"},
--- {trigger: "xjj", replacement: "x_{j}", options: "mA"},
--- {trigger: "xp1", replacement: "x_{n+1}", options: "mA"},
--- {trigger: "ynn", replacement: "y_{n}", options: "mA"},
--- {trigger: "yii", replacement: "y_{i}", options: "mA"},
--- {trigger: "yjj", replacement: "y_{j}", options: "mA"},
 
 ------------------------------------ Derivatives
 
@@ -539,7 +571,7 @@ local environment_snippets = {
   s({ trig = "array", snippetType = "autosnippet", condition = math_not_escaped },
     fmt_angle("\\begin{array}{<>}\n  <>\n\\end{array}", { i(1), i(2) })),
   s(
-    { trig = "beg", condition = not_escaped},
+    { trig = "beg", condition = not_escaped },
     fmt_angle("\\begin{<>}\n  <>\n\\end{<>}",
       { i(1, "env"),
         i(3),
@@ -548,19 +580,19 @@ local environment_snippets = {
         end, { 1 })
       })
   ),
-  s({ trig = "enum", condition=notMath},
+  s({ trig = "enum", condition = notMath },
     fmt_angle("\\begin{enumerate}\n  <>\n\\end{enumerate}", { i(1) })),
-  s({ trig = "itemize", condition=notMath},
+  s({ trig = "itemize", condition = notMath },
     fmt_angle("\\begin{itemize}\n  <>\n\\end{itemize}", { i(1) })),
-  s({ trig = "exam"},
+  s({ trig = "exam" },
     fmt_angle("\\begin{examquestion}{<>}{<>}{<>}\n<>\n\\end{examquestion}", { i(1), i(2), i(3), i(4) })),
-  s({ trig = "listing"},
+  s({ trig = "listing" },
     fmt_angle("\\begin{lstlisting}\n<>\n\\end{lstlisting}", { i(1) })),
-  s({ trig = "RTP"},
+  s({ trig = "RTP" },
     fmt_angle("\\begin{RTP}{<>}\n  <>\n\\end{RTP}", { i(1), i(2) })),
-  s({ trig = "cases", condition=notMath},
+  s({ trig = "cases", condition = notMath },
     fmt_angle("\\begin{proofcase}\n  <>\n\\end{proofcase}", { i(1) })),
-  s({ trig = "center", condition=notMath},
+  s({ trig = "center", condition = notMath },
     fmt_angle("\\begin{center}\n  <>\n\\end{center}", { i(1) })),
 }
 
@@ -579,20 +611,22 @@ local function subscriptSymbol(symbol)
 end
 
 local subscript_snippets = {
-  s({ trig = "(%a)(%d)",  -- add subscript for variables
-  snippetType = "autosnippet",
-  -- condition = math,
-  condition = function(line_to_cursor, matched_trigger)
-    local symbol_pattern = "\\(%a+)%d$"
-    local _, _, symbol = string.find(line_to_cursor, symbol_pattern)
-    if symbol and not has_value(GREEK, symbol) then  -- do not subscript if not greek
-      return false
-    end
+  s({
+      trig = "(%a)(%d)", -- add subscript for variables
+      snippetType = "autosnippet",
+      -- condition = math,
+      condition = function(line_to_cursor, matched_trigger)
+        local symbol_pattern = "\\(%a+)%d$"
+        local _, _, symbol = string.find(line_to_cursor, symbol_pattern)
+        if symbol and not has_value(GREEK, symbol) then -- do not subscript if not greek
+          return false
+        end
 
-    return math()  -- only subscript if in math
-  end,
-  regTrig = true,
-  wordTrig = false },
+        return math() -- only subscript if in math
+      end,
+      regTrig = true,
+      wordTrig = false
+    },
 
     fmt_angle([[<>_{<>}]],
       { f(function(_, parent)
@@ -604,25 +638,25 @@ local subscript_snippets = {
       })
   ),
 
-  s({ trig = "(%a)(%a)(%a)",  -- add alpha subscript for variables
-  snippetType = "autosnippet",
-  -- condition = math,
-  condition = function(line_to_cursor, matched_trigger)
-    local symbol_pattern = "\\(%a+)%a%a$"
-    local _, _, symbol = string.find(line_to_cursor, symbol_pattern)
-    if symbol and not has_value(GREEK, symbol) then  -- do not subscript if not greek
-      return false
-    end
+  s({
+      trig = "(%a)(%a)(%a)", -- add alpha subscript for variables
+      snippetType = "autosnippet",
+      -- condition = math,
+      condition = function(line_to_cursor, matched_trigger)
+        local symbol_pattern = "\\(%a+)%a%a$"
+        local _, _, symbol = string.find(line_to_cursor, symbol_pattern)
+        if symbol and not has_value(GREEK, symbol) then -- do not subscript if not greek
+          return false
+        end
 
-    local len = string.len(line_to_cursor)
-    local first_letter = line_to_cursor:sub(len - 1, len - 1)
-    local second_letter = line_to_cursor:sub(len, len)
-    print("got here")
-    print(first_letter .. " + " .. second_letter)
-    return math() and (first_letter == second_letter)  -- only subscript if in math
-  end,
-  regTrig = true,
-  wordTrig = false },
+        local len = string.len(line_to_cursor)
+        local first_letter = line_to_cursor:sub(len - 1, len - 1)
+        local second_letter = line_to_cursor:sub(len, len)
+        return math() and (first_letter == second_letter) -- only subscript if in math
+      end,
+      regTrig = true,
+      wordTrig = false
+    },
 
     fmt_angle([[<>_{<>}]],
       { f(function(_, parent)
@@ -650,22 +684,54 @@ local misc_snippets = {
     fmt_angle("\\lvert <> \\rvert", { i(1) })),
   s({ trig = "ceil", snippetType = "autosnippet", condition = math },
     fmt_angle("\\lceil <> \\rceil", { i(1) })),
-  s({ trig = "floor", snippetType = "autosnippet", condition = math },
+  s({ trig = "fl_{o}r", snippetType = "autosnippet", condition = math, wordTrig = false, priority = 1001},
     fmt_angle("\\lfloor <> \\rfloor", { i(1) })),
   s({ trig = "uco", snippetType = "autosnippet", condition = math },
     fmt_angle("\\ulcorner <> \\urcorner", { i(1) })),
   s({ trig = "lco", snippetType = "autosnippet", condition = math },
     fmt_angle("\\llcorner <> \\lrcorner", { i(1) })),
 
-  -- note the rhs brackets are omitted as it is completed by autopairs
+  postfix({
+      trig = "(",
+      snippetType = "autosnippet",
+      match_pattern = "\\left",
+      condition = function(line_to_cursor, _)
+        local matched = line_to_cursor:match("\\left%($")
+        return matched
+      end
+    },
+    fmt_angle("\\left( <> \\right)", { i(1) })),
+
+  postfix({
+      trig = "{",
+      snippetType = "autosnippet",
+      match_pattern = "\\left",
+      condition = function(line_to_cursor, _)
+        local matched = line_to_cursor:match("\\left%{$")
+        return matched
+      end
+    },
+    fmt_angle("\\left{ <> \\right}", { i(1) })),
+
+  postfix({
+      trig = "[",
+      snippetType = "autosnippet",
+      match_pattern = "\\left",
+      condition = function(line_to_cursor, _)
+        local matched = line_to_cursor:match("\\left%[$")
+        return matched
+      end
+    },
+    fmt_angle("\\left[ <> \\right]", { i(1) })),
+
   s({ trig = "lr(", snippetType = "autosnippet", condition = math },
-    fmt_angle("\\left( <> \\right", { i(1) })),
+    fmt_angle("\\left( <> \\right)", { i(1) })),
   s({ trig = "lr|", snippetType = "autosnippet", condition = math },
     fmt_angle("\\left| <> \\right|", { i(1) })),
-  s({ trig = "lr{", snippetType = "autosnippet", condition = math },
-    fmt_angle("\\left{ <> \\right", { i(1) })),
+  s({ trig = "lr{", snippetType = "autosnippet", condition = prev_math() },
+    fmt_angle("\\left{ <> \\right}", { i(1) })),
   s({ trig = "lr[", snippetType = "autosnippet", condition = math },
-    fmt_angle("\\left[ <> \\right", { i(1) })),
+    fmt_angle("\\left[ <> \\right]", { i(1) })),
   s({ trig = "lra", snippetType = "autosnippet", condition = math },
     fmt("\\left< {} \\right>", { i(1) })),
 
@@ -684,7 +750,7 @@ local misc_snippets = {
     },
     fmt_angle("\\begin{center}\n  \\includegraphics[width=0.7\\columnwidth]{./diagrams/<>}\n\\end{center}", { i(1) })
   ),
-  s({ trig = "hsp", snippetType = "autosnippet"},
+  s({ trig = "hsp", snippetType = "autosnippet" },
     fmt_angle("\\hspace{<>em}", { i(1) })),
 
   -- Custom commands
@@ -698,25 +764,29 @@ local misc_snippets = {
     fmt_angle("\\underline{<>}", { i(1) })),
   s({ trig = "ud", condition = math },
     fmt_angle("\\underline{<>}", { i(1) })),
-  s({ trig = "boxc"},
+  s({ trig = "boxc" },
     fmt_angle("\\boxc{<>}", { i(1) })),
-  s({ trig = "boxed"},
+  s({ trig = "boxed" },
     fmt_angle("\\boxed{<>}", { i(1) })),
-  s({ trig = "(%d+)marks",  -- add subscript for variables
-    snippetType = "autosnippet",
-    regTrig = true,
-    wordTrig = false },
+  s({
+      trig = "(%d+)marks", -- add subscript for variables
+      snippetType = "autosnippet",
+      regTrig = true,
+      wordTrig = false
+    },
 
-      fmt_angle([[\signed{[<> marks]}]],
-        { f(function(_, parent)
-          return parent.snippet.captures[1]
-        end),
-        })
+    fmt_angle([[\signed{[<> marks]}]],
+      { f(function(_, parent)
+        return parent.snippet.captures[1]
+      end),
+      })
   ),
-  s({ trig = "1mark",
-    snippetType = "autosnippet",
-    regTrig = true,
-    wordTrig = false },
+  s({
+      trig = "1mark",
+      snippetType = "autosnippet",
+      regTrig = true,
+      wordTrig = false
+    },
     t("\\signed{[1 mark]}")),
   s({ trig = "lsti", snippetType = "autosnippet", condition = notMath },
     fmt_angle("\\lstinline{<>}", { i(1) })),
@@ -743,36 +813,37 @@ local misc_snippets = {
   s({ trig = "oprule", condition = math, snippetType = "autosnippet" },
     fmt_angle("\\oprule{<>}{<>}{<>}", { i(1), i(2), i(3) })),
 
-  s({ trig = "noprule", condition = math, snippetType = "autosnippet", priority = 1001},
+  s({ trig = "noprule", condition = math, snippetType = "autosnippet", priority = 1001 },
     fmt_angle("\\noprule{<>}{<>}", { i(1), i(2) })),
 
-  s({ trig = "dom", condition = not_escaped},
+  s({ trig = "dom", condition = not_escaped },
     fmt_angle("\\mathrm{dom}(<>)", { i(1) })),
-  s({ trig = "loc", condition = not_escaped},
+  s({ trig = "loc", condition = not_escaped },
     fmt_angle("\\mathrm{loc}(<>)", { i(1) })),
-  s({ trig = "closed", condition = not_escaped},
+  s({ trig = "closed", condition = not_escaped },
     fmt_angle("\\mathrm{closed}(<>)", { i(1) })),
-  s({ trig = "fv", condition = not_escaped},
+  s({ trig = "fv", condition = not_escaped },
     fmt_angle("\\mathrm{fv}(<>)", { i(1) })),
 
-   -- Proofs 
+  -- Proofs
 
-  s({ trig = "case"},
+  s({ trig = "case" },
     fmt_angle("\\case{<>}", { i(1) })),
-  s({ trig = "assume"},
+    -- assume
+  postfix({ trig = "ume", match_pattern="a_{s} ", name = "assume" },
     fmt_angle("\\assumption{<>}{<>}", { i(1), i(2) })),
-  s({ trig = "rule"},
+  s({ trig = "rule" },
     fmt_angle("\\inlrule{<>}", { i(1) })),
-  s({ trig = "res", condition = not_escaped},
+  s({ trig = "res", condition = not_escaped },
     fmt_angle("\\result{<>}", { i(1) })),
-  s({ trig = "by", condition = not_escaped},
+  s({ trig = "by", condition = not_escaped },
     fmt_angle("\\by{<>}", { i(1) })),
 
   -- Computation Theory
 
-  s({ trig = "\\implies*", condition = math_not_escaped},
+  s({ trig = "\\implies*", condition = math_not_escaped },
     t("\\impliesst")),
-  s({ trig = "\\implies+", condition = math_not_escaped},
+  s({ trig = "\\implies+", condition = math_not_escaped },
     t("\\impliespl")),
 }
 ------------------------------------ Add the snippets
@@ -780,19 +851,23 @@ local misc_snippets = {
 local snippets = {}
 insertAll(snippets, math_mode)
 
-insertAll(snippets, greek)                                                 -- greek snippets from shortcuts
-insertAll(snippets, vim.tbl_map(toTexCommand, GREEK))                      -- greek snippets from names
-insertAll(snippets, vim.tbl_map(toTexCommand, SYMBOL))                     -- symbol snippets from names
+insertAll(snippets, greek)                             -- greek snippets from shortcuts
+insertAll(snippets, vim.tbl_map(toTexCommand, GREEK))  -- greek snippets from names
+insertAll(snippets, vim.tbl_map(toTexCommand, SYMBOL)) -- symbol snippets from names
 
-insertAll(snippets, vim.tbl_map(symbolInsertSpaceTrig("%a"), ALL_SYMBOLS)) -- add spaces after all symbols on alphanumeric
-insertAll(snippets, vim.tbl_map(symbolInsertSpaceTrig("%d"), SYMBOLS))     -- add spaces after symbols for on number
-insertAll(snippets, modifier_snippets)                                     -- add modifiers to symbols
-insertAll(snippets, operation_snippets)                                    -- add general operations
-insertAll(snippets, symbol_snippets)                                       -- add symbol snippets
-insertAll(snippets, derivative_snippets)                                   -- deriative snippets
-insertAll(snippets, integral_snippets)                                     -- deriative snippets
-insertAll(snippets, environment_snippets)                                  -- deriative snippets
-insertAll(snippets, misc_snippets)                                         -- misc snippets
+-- add spaces after all symbols on alphanumeric
+insertAll(snippets, vim.tbl_map(symbolInsertSpaceTrig("%a"), ALL_SYMBOLS))
+-- add spaces after symbols for on number
+insertAll(snippets, vim.tbl_map(symbolInsertSpaceTrig("%d"), SYMBOLS))
+-- add spaces after all custom symbols on alphanumeric
+insertAll(snippets, vim.tbl_map(customSymbolInsertSpaceTrig("%a"), CUSTOM_SPACE_AFTER_CHARS))
+insertAll(snippets, modifier_snippets)    -- add modifiers to symbols
+insertAll(snippets, operation_snippets)   -- add general operations
+insertAll(snippets, symbol_snippets)      -- add symbol snippets
+insertAll(snippets, derivative_snippets)  -- deriative snippets
+insertAll(snippets, integral_snippets)    -- deriative snippets
+insertAll(snippets, environment_snippets) -- deriative snippets
+insertAll(snippets, misc_snippets)        -- misc snippets
 insertAll(snippets, subscript_snippets)
 
 return snippets
