@@ -17,9 +17,6 @@ local plugins = {
   "nvim-lua/popup.nvim", -- An implementation of the Popup API from vim in Neovim
   {import = "endoxide.plugins"},
 
-  "windwp/nvim-ts-autotag", -- Autotags
-
-
   -- snippets
   "rafamadriz/friendly-snippets", -- a bunch of snippets to use
 
