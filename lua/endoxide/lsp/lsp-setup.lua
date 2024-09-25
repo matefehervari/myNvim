@@ -47,7 +47,11 @@ end
 
 local function lsp_highlight_document(client)
   -- Set autocommands conditional on server_capabilities
-  if client.server_capabilities.document_highlight then
+  if not client.resolved_capabilities then
+    return
+  end
+
+  if client.resolved_capabilities.document_highlight then
     vim.api.nvim_exec(
       [[
       augroup lsp_document_highlight
@@ -82,11 +86,8 @@ end
 M.on_attach = function(client, bufnr)
   lsp_keymaps(bufnr)
   lsp_highlight_document(client)
-  -- print(client.name)
-  if client.name == "tsserver" then
-    client.resolved_capabilities.document_formatting = false
 
-  elseif client.name == "jdtls" then
+  if client.name == "jdtls" then
     vim.lsp.codelens.refresh()
     if JAVA_DAP_ACTIVE then -- defined in ftplugin
       require("jdtls").setup_dap({ hotcodereplace = "auto" })
