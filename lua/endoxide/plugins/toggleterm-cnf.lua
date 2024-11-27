@@ -79,7 +79,13 @@ return {
 
     vim.cmd('autocmd! TermOpen term://* lua set_terminal_keymaps()')
 
-    nnoremap("<leader>tt", ":ToggleTerm direction=float<CR>")
+    nnoremap("<leader>tt", ":ToggleTerm direction=float dir=git_dir <CR>")
+    nnoremap("<leader>tb", function ()
+      local buffer_dir = vim.fn.expand("%:p:h")
+      local command = (":ToggleTerm direction=float dir=%s <CR>"):format(buffer_dir)
+      print(command)
+      vim.cmd(command)
+    end)
     nnoremap("<leader>tv", ":ToggleTerm direction=vertical<CR>")
     nnoremap("<leader>tp", _PYTHON_TOGGLE)
     nnoremap("<leader>tg", _GITUI_TOGGLE)

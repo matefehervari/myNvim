@@ -81,7 +81,7 @@ local function get_delete_rule(lhs, rhs)
 end
 
 
----@param str string
+---@param fmt_str string
 local fmt_angle_to_pair_delete_rules = function(fmt_str)
   local pair_parts = {}
   for str in fmt_str:gmatch("([^<>]+)") do

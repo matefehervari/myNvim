@@ -103,30 +103,26 @@ return {
     local nnoremap = Remap.nnoremap
 
     local root_markers = { ".git", "mvnw", "gradlew", "pom.xml", "build.gradle", "pyproject.toml" }
-    nnoremap("<leader>ff", function()
+    local function root_mod(telescope_fn)
         local root_dir = fu.find_root(root_markers)
         if root_dir == "" then
-          builtin.find_files()
-        else
-          builtin.find_files({ cwd = root_dir, no_ignore = true, no_parent_ignore = true })
+          return telescope_fn
         end
-      end,
-      { desc = "Fuzzy find files in project. If no project is found, search in cwd." })
 
-    nnoremap("<leader>fd", ":Telescope find_files cwd=",
-      { desc = "Fuzzy find files in specified directory" })
+        local opts = { cwd = root_dir, no_ignore = false, no_parent_ignore = true }
+        return function ()
+          telescope_fn(opts)
+        end
+    end
 
-    nnoremap("<leader>fg", ":Telescope git_files<cr>",
-      { desc = "Fuzzy find files in current repository" })
+    -- Mappings
 
-    nnoremap("<leader>fs", ":Telescope live_grep<cr>",
-      { desc = "Find string in cwd" })
-
-    nnoremap("<leader>fw", ":Telescope grep_string<cr>",
-      { desc = "Find string under cursor in cwd" })
-
-    nnoremap("<leader>fq", ":Telescope persisted<CR>",
-      { desc = "Search through sessions" })
+    nnoremap("<leader>ff", root_mod(builtin.find_files), {desc = "Find files in project / cwd"})
+    nnoremap("<leader>fd", ":Telescope find_files cwd=", { desc = "Fuzzy find files in specified directory" })
+    nnoremap("<leader>fg", ":Telescope git_files<cr>", { desc = "Fuzzy find files in current repository" })
+    nnoremap("<leader>fs", root_mod(builtin.live_grep), { desc = "Find string in cwd" })
+    nnoremap("<leader>fw", root_mod(builtin.grep_string), { desc = "Find string under cursor in project / cwd" })
+    nnoremap("<leader>fq", ":Telescope persisted<CR>", { desc = "Search through sessions" })
 
     -- colors
     local hl = require("endoxide.util.highlights").hl

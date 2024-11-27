@@ -312,7 +312,7 @@ local symbols_nodes = {
   ["ooo"]          = { t("\\infty") },
   ["sum"]          = { t("\\sum") },
   ["prod"]         = { t("\\prod") },
-  ["lim"]          = fmt_angle([[\lim_{ <> \to <> }]], { i(1, "n"), i(2, "\\infty") }),
+  -- ["lim"]          = fmt_angle([[\lim_{ <> \to <> }]], { i(1, "n"), i(2, "\\infty") }),
   ["invs"]         = { t("^{-1}") },
   ["pfun"]         = { t("\\pfun") },
   ["and"]          = { t("\\cap") },
@@ -678,7 +678,7 @@ local misc_snippets = {
     fmt_angle("\\langle <> \\rangle", { i(1) })),
   s({ trig = "dang", snippetType = "autosnippet", condition = math },
     fmt_angle("\\dlangle <> \\drangle", { i(1) })),
-  s({ trig = "norm", snippetType = "autosnippet", condition = math },
+  s({ trig = "norm", snippetType = "autosnippet", condition = math, priority = 1001 },
     fmt_angle("\\lvert <> \\rvert", { i(1) })),
   s({ trig = "mod", snippetType = "autosnippet", condition = math },
     fmt_angle("\\lvert <> \\rvert", { i(1) })),
@@ -749,6 +749,13 @@ local misc_snippets = {
       dscr = "Insert default centered supervision image",
     },
     fmt_angle("\\begin{center}\n  \\includegraphics[width=0.7\\columnwidth]{./diagrams/<>}\n\\end{center}", { i(1) })
+  ),
+  s({
+      trig = "figure",
+      namr = "Figure",
+      dscr = "Insert default centered figure image",
+    },
+    fmt_angle("\\begin{figure}[h]\n  \\centering\n  \\includegraphics[width=0.7\\columnwidth]{./diagrams/<>}\n  \\caption{<>}\n\\end{figure}", { i(1), i(2) })
   ),
   s({ trig = "hsp", snippetType = "autosnippet" },
     fmt_angle("\\hspace{<>em}", { i(1) })),

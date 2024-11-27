@@ -57,7 +57,10 @@ function M.in_mathzone()
     local buf = vim.api.nvim_get_current_buf()
     local node = get_node_at_cursor()
     while node do
-      if MATH_NODES[node:type()] then
+      if node:type() == "ERROR" then
+        -- Some nodes such as subscripting may cause parse errors. Fallback to previous mathzone state in that case.
+        return vim.g.prev_tex_in_math_zone
+      elseif MATH_NODES[node:type()] then
         return true
       elseif node:type() == "text_mode" then -- \text{} inside mathzone sohuld be treated as text
         return false

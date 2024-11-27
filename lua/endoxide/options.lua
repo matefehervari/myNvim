@@ -27,6 +27,8 @@ vim.opt.writebackup = false                     -- if a file is being edited by 
 vim.opt.guifont = "monospace:h17"               -- the font used in graphical neovim applications
 
 vim.opt.wrap = false
+vim.opt.linebreak = false
+vim.opt.breakindent = false
 
 vim.opt.swapfile = false
 vim.opt.backup = false

@@ -53,6 +53,14 @@ autocmd({ "BufRead" }, {
   end,
 })
 
+autocmd({ "BufRead" }, {
+  group = endoxideGroup,
+  pattern = "*.bsv",
+  callback = function()
+    vim.cmd(":set commentstring=//%s")
+  end,
+})
+
 autocmd("LspAttach", {
   group = endoxideGroup,
   callback = function()
