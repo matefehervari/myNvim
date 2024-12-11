@@ -5,9 +5,9 @@ vim.opt.relativenumber = true
 
 vim.opt.errorbells = false
 
-vim.opt.tabstop = 2
-vim.opt.softtabstop = 2
-vim.opt.shiftwidth = 2
+vim.opt.tabstop = 4                             -- how many characters is a tab character worth
+vim.opt.softtabstop = 4                         -- how many characters is pressing tab or backspace worth
+vim.opt.shiftwidth = 4                          -- characters to automatically indent by
 vim.opt.expandtab = true
 vim.opt.smartindent = true
 

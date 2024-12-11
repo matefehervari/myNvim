@@ -15,6 +15,7 @@ return {
     lua.load({
       paths = "./lua/endoxide/snippets",
     })
+    vscode.load()
     -- vscode.lazy_load {
     --   exclude = { "tex" }
     -- }

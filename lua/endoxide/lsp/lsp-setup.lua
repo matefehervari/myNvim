@@ -99,8 +99,8 @@ M.on_attach = function(client, bufnr)
 
   elseif client.name == "rust_analyzer" then
     local rt = require("rust-tools")
-    nnoremap("K", rt.hover_actions.hover_actions, {bufnr = bufnr})
-    nnoremap("<leader>ca", rt.code_action_group.code_action_group, {bufnr = bufnr})
+    nnoremap("K", rt.hover_actions.hover_actions, {buffer = bufnr})
+    nnoremap("<leader>ca", rt.code_action_group.code_action_group, {buffer = bufnr})
   end
 end
 

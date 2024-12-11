@@ -32,7 +32,7 @@ return {
         right_trunc_marker = ui.ArrowCircleRight,
         max_name_length = 30,
         max_prefix_length = 30,   -- prefix used when a buffer is de-duplicated
-        tab_size = 21,
+        tab_size = 15,
         diagnostics = "nvim_lsp", -- false | "nvim_lsp" | "coc",
         diagnostics_indicator = function(count, level)
           local icon = (level:match("error") and diagnostics.Error) or
@@ -56,7 +56,7 @@ return {
         -- can also be a table containing 2 custom separators
         -- [focused and unfocused]. eg: { '|', '|' }
         separator_style = { "", "" }, -- | "thick" | "thin" | { 'any', 'any' },
-        enforce_regular_tabs = true,
+        enforce_regular_tabs = false,
         always_show_bufferline = true,
 
         custom_filter = (function(buf_number, _) -- buf_number, buf_numbers

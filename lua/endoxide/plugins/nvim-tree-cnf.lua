@@ -53,6 +53,13 @@ return {
       },
       renderer = {
         root_folder_modifier = ":t",
+        icons = {
+            web_devicons = {
+                folder = {
+                    enable = true
+                }
+            }
+        }
       },
       system_open = {
         cmd = "sioyek"
@@ -61,6 +68,11 @@ return {
         enable = true,
         ignore = false,
         timeout = 500,
+      },
+      filters = {
+          custom = {
+              "__pycache__",
+          }
       }
     }
 
