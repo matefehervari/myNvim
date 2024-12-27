@@ -1,15 +1,13 @@
--- vim.g.endoxide_colorscheme = "tokyonight"
-
 local hl = require("endoxide.util.highlights").hl
 
-function ColorMyPencils()
-  -- vim.g.gruvbox_contrast_dark = 'hard'
+local colors = {
+    black = "#000000"
+}
+
+local function ColorMyPencils()
   vim.g.tokyonight_transparent_sidebar = true
   vim.g.tokyonight_transparent = true
-  -- vim.g.gruvbox_invert_selection = '0'
   vim.opt.background = "dark"
-
-  -- vim.cmd("colorscheme " .. vim.g.endoxide_colorscheme)
 
   hl("SignColumn", {
     bg = "none",
@@ -76,6 +74,17 @@ function ColorMyPencils()
     fg = "#545c7e",
     bg = "none",
   })
+
+  hl("StatusLine", {
+    bg = "None"
+  })
+  hl("StatusLineNC", {
+    bg = "None"
+  })
 end
 
-ColorMyPencils()
+local M = {}
+M.ColorMyPencils = ColorMyPencils
+M.colors = colors
+
+return M
