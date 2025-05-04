@@ -20,7 +20,9 @@ inoremap("<A-o>", "_<ESC>moo<ESC>`os")
 inoremap("<A-O>", "_<ESC>moO<ESC>`os")
 
 -- quick writing
-nnoremap("<leader>w", ":wa<CR>")
+nnoremap("<leader>w", function ()
+    vim.cmd("silent! write")
+end)
 
 -- moving between splits
 nnoremap("<C-j>", "<C-w>j")
@@ -42,19 +44,30 @@ cnoremap("<C-l>", "<Right>")
 inoremap("<C-h>", "<Left>")
 inoremap("<C-l>", "<Right>")
 
--- escape is a bit of a stetch
 -- clears luasnip jumpable
-inoremap("<S-Tab>", [[<ESC>:lua require('luasnip').unlink_current()<CR>:lua print(' ')<CR>]])
-vnoremap("<S-Tab>", "<ESC>")
-snoremap("<S-Tab>", [[<ESC>:lua require('luasnip').unlink_current()<CR>:lua print(' ')<CR>]])
-cnoremap("<S-Tab>", "<C-c>")
-tnoremap("<S-Tab>", [[<C-\><C-n>]])
+inoremap("<ESC>", function ()
+    vim.cmd("stopinsert")
+    local luasnip = require("luasnip")
+    if luasnip.jumpable() then
+        luasnip.unlink_current()
+    end
+end)
+vnoremap("<ESC>", "<C-c>")
+snoremap("<ESC>", function ()
+    vim.cmd("stopinsert")
+    local luasnip = require("luasnip")
+    if luasnip.jumpable() then
+        luasnip.unlink_current()
+    end
+end)
+tnoremap("<ESC>", [[<C-\><C-n>]])
+cnoremap("<ESC>", "<C-c>")
 
 -- move lines around
--- nnoremap("<C-n>", ":m .-2<CR>==")
--- nnoremap("<C-m>", ":m .+1<CR>==")
-vnoremap("<C-h>", ":m '<-2<CR>gv")
-vnoremap("<C-l>", ":m '>+1<CR>gv")
+nnoremap("<C-Up>", ":m .-2<CR>==")
+nnoremap("<C-Down>", ":m .+1<CR>==")
+vnoremap("<C-Up>", ":m '<-2<CR>gv")
+vnoremap("<C-Down>", ":m '>+1<CR>gv")
 
 -- tab is superior
 -- nnoremap("<Tab>", ">>")
@@ -79,14 +92,39 @@ nnoremap("<leader>cd", function()
 end)
 
 -- visual bracketing
-vnoremap("<leader>(", "s()<Esc><Left>p")
-vnoremap("<leader>)", "s()<Esc><Left>p")
-vnoremap("<leader>{", "s{}<Esc><Left>p")
-vnoremap("<leader>}", "s{}<Esc><Left>p")
-vnoremap("<leader>[", "s[]<Esc><Left>p")
-vnoremap("<leader>]", "s[]<Esc><Left>p")
-vnoremap("<leader><", "s<><Esc><Left>p")
-vnoremap("<leader>>", "s<><Esc><Left>p")
+vnoremap("<leader>(",   "s()<Esc><Left>p")
+vnoremap("<leader>)",   "s()<Esc><Left>p")
+vnoremap("<leader>{",   "s{}<Esc><Left>p")
+vnoremap("<leader>}",   "s{}<Esc><Left>p")
+vnoremap("<leader>[",   "s[]<Esc><Left>p")
+vnoremap("<leader>]",   "s[]<Esc><Left>p")
+vnoremap("<leader><",   "s<><Esc><Left>p")
+vnoremap("<leader>>",   "s<><Esc><Left>p")
 vnoremap([[<leader>"]], [[s""<Esc><Left>p]])
 vnoremap([[<leader>']], [[s''<Esc><Left>p]])
 vnoremap([[<leader>`]], [[s``<Esc><Left>p]])
+
+-- remove superfluous space
+nnoremap("gds", [[:s/\S\zs\s\{2,}/ /g<CR>]])
+vnoremap("gds", [[:s/\S\zs\s\{2,}/ /g<CR>]])
+
+-- run program
+nnoremap("<leader>rt", function ()
+    local file_name = vim.api.nvim_buf_get_name(0)
+    local file_type = vim.bo.filetype
+
+    if file_type == "python" then
+        vim.cmd(":terminal python3 " .. file_name)
+    elseif file_type == "sh" then
+        vim.cmd(":terminal sh " .. file_name)
+    elseif file_type == "bash" then
+        vim.cmd(":terminal bash " .. file_name)
+    elseif file_type == "c" then
+        vim.cmd(":terminal gcc " .. file_name .. "; ./a.out")
+    end
+
+end)
+
+-- Custom user commmands
+-- duplicate with replace
+nnoremap("yd", "<cmd>DuplicateWithReplace<CR>")

@@ -12,6 +12,7 @@ return {
     local config = {
       texoutputext = "pdf",
       textopdf = "tectonic --synctex %docroot%",
+      delay = 50,
     }
 
     vim.g.knap_settings = config

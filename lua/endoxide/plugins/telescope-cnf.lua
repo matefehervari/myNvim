@@ -18,7 +18,7 @@ return {
         local builtin = require("telescope.builtin")
         local fu = require("endoxide.util.fileutils")
 
-        local ignore_patterns = { "__pycache__", "target" }
+        local ignore_patterns = { "__pycache__", "target", "node_modules","build" }
         local config = {
             defaults = {
 
@@ -31,15 +31,15 @@ return {
                         ["<C-j>"] = actions.move_selection_next,
                         ["<C-k>"] = actions.move_selection_previous,
 
-                        ["<S-Tab>"] = actions.close,
+                        ["<ESC>"] = actions.close,
 
                         ["<Down>"] = actions.move_selection_next,
                         ["<Up>"] = actions.move_selection_previous,
 
                         ["<CR>"] = actions.select_default,
                         ["<C-s>"] = actions.select_horizontal, -- opens in horizontal split
-                        ["<C-v>"] = actions.select_vertical, -- opens in vertical split
-                        ["<C-t>"] = actions.select_tab, -- opens in new tab
+                        ["<C-v>"] = actions.select_vertical,   -- opens in vertical split
+                        ["<C-t>"] = actions.select_tab,        -- opens in new tab
 
                         ["<C-u>"] = actions.preview_scrolling_up,
                         ["<C-d>"] = actions.preview_scrolling_down,
@@ -47,7 +47,7 @@ return {
                         ["<C-y>"] = actions.results_scrolling_up,
                         ["<C-e>"] = actions.results_scrolling_down,
 
-                        ["<M-k>"] = actions.toggle_selection + actions.move_selection_worse, -- multiselect up
+                        ["<M-k>"] = actions.toggle_selection + actions.move_selection_worse,  -- multiselect up
                         ["<M-j>"] = actions.toggle_selection + actions.move_selection_better, -- multiselect down
                         ["<C-q>"] = actions.send_to_qflist + actions.open_qflist,
                         ["<M-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
@@ -122,22 +122,22 @@ return {
             end
         end
 
-        local function glob_mod(telescope_fn)
-            local opts = {glob_pattern = ignore_patterns}
-            return function(extra_opts)
-                opts = vim.tbl_deep_extend("force", opts, extra_opts or {})
-                telescope_fn(opts)
-            end
-        end
+        -- local function glob_mod(telescope_fn)
+        --     local opts = { glob_pattern = ignore_patterns }
+        --     return function(extra_opts)
+        --         opts = vim.tbl_deep_extend("force", opts, extra_opts or {})
+        --         telescope_fn(opts)
+        --     end
+        -- end
 
         -- Mappings
 
-        nnoremap("<leader>ff", root_mod(builtin.find_files, {no_parent_ignore = false}),
-            { desc = "Find files in project / cwd"})
+        nnoremap("<leader>ff", root_mod(builtin.find_files, { no_parent_ignore = true }),
+            { desc = "Find files in project / cwd" })
         nnoremap("<leader>fd", ":Telescope find_files cwd=",
-            { desc = "Fuzzy find files in specified directory"})
+            { desc = "Fuzzy find files in specified directory" })
         nnoremap("<leader>fg", ":Telescope git_files<cr>",
-            { desc = "Fuzzy find files in current repository"})
+            { desc = "Fuzzy find files in current repository" })
         nnoremap("<leader>fs", root_mod(builtin.live_grep), { desc = "Find string in cwd" })
         nnoremap("<leader>fw", root_mod(builtin.grep_string), { desc = "Find string under cursor in project / cwd" })
         nnoremap("<leader>fq", ":Telescope persisted<CR>", { desc = "Search through sessions" })

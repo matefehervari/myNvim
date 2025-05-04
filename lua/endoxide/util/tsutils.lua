@@ -12,6 +12,7 @@ local MATH_ENVIRONMENTS = {
   math = true,
   array = true,
   alignat = true,
+  prooftree = true,
 }
 
 local MATH_NODES = {

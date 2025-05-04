@@ -20,7 +20,7 @@ vim.opt.completeopt = { "menuone", "noselect" }
 vim.opt.conceallevel = 0                        -- so that `` is visible in markdown files
 vim.opt.fileencoding = "utf-8"                  -- the encoding written to a file
 vim.opt.pumheight = 10                          -- pop up menu height
-vim.opt.showtabline = 2                         -- always show tabs
+vim.opt.showtabline = 0                         -- always show tabs
 vim.opt.splitbelow = true                       -- force all horizontal splits to go below current window
 vim.opt.splitright = true                       -- force all vertical splits to go to the right of current window
 vim.opt.writebackup = false                     -- if a file is being edited by another program (or was written to file while editing with another program), it is not allowed to be edited
@@ -45,6 +45,7 @@ vim.opt.signcolumn = "yes"
 
 -- Give more space for displaying messages.
 vim.opt.cmdheight = 1
+vim.opt.laststatus = 1
 
 -- Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
 -- delays and poor user experience.
@@ -62,6 +63,10 @@ vim.g.colorcolumn = "80"
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
+
+-- case sensitivity
+vim.cmd "set ignorecase"
+vim.cmd "set smartcase"
 
 vim.cmd "set whichwrap+=<,>,[,],h,l"
 

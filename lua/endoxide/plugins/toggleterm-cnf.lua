@@ -83,7 +83,6 @@ return {
     nnoremap("<leader>tb", function ()
       local buffer_dir = vim.fn.expand("%:p:h")
       local command = (":ToggleTerm direction=float dir=%s <CR>"):format(buffer_dir)
-      print(command)
       vim.cmd(command)
     end)
     nnoremap("<leader>tv", ":ToggleTerm direction=vertical<CR>")

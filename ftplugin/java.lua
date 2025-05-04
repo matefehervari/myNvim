@@ -25,7 +25,6 @@ CONFIG = "linux"
 -- Find root of project
 local root_markers = { ".git", "mvnw", "gradlew", "pom.xml", "build.gradle" }
 local root_dir = require("jdtls.setup").find_root(root_markers)
--- print(root_dir)
 if root_dir == "" then
   return
 end
@@ -34,7 +33,6 @@ local extendedClientCapabilities = jdtls.extendedClientCapabilities
 extendedClientCapabilities.resolveAdditionalTextEditsSupport = true
 
 local project_name = vim.fn.fnamemodify(root_dir, ":p:h:t")
--- print(project_name)
 
 local workspace_dir = WORKSPACE_PATH .. project_name
 

@@ -1,7 +1,7 @@
 local fn = vim.fn
 
 local lazypath = fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
   LAZY_BOOTSTRAP = fn.system({
     "git",
     "clone",
@@ -16,16 +16,13 @@ vim.opt.rtp:prepend(lazypath)
 local plugins = {
   "nvim-lua/popup.nvim", -- An implementation of the Popup API from vim in Neovim
   {import = "endoxide.plugins"},
+  {import = "endoxide.plugins.lsp"},
 
   -- snippets
   "rafamadriz/friendly-snippets", -- a bunch of snippets to use
 
-  -- colorscheme
-  "folke/tokyonight.nvim",
-
   -- lsp stuff
-  "neovim/nvim-lspconfig", -- enable LSP
-  -- use("williamboman/nvim-lsp-installer") -- LSP installer
+  -- "neovim/nvim-lspconfig", -- enable LSP
   "williamboman/mason.nvim", -- LSP installer
   "williamboman/mason-lspconfig.nvim",
 
@@ -56,6 +53,14 @@ local plugins = {
   "simrat39/rust-tools.nvim",
 }
 
-local opts = {}
+local opts = {
+    change_detection = {
+        enabled = false,
+        notify  = false,
+    },
+    ui = {
+        border = "rounded",
+    },
+}
 
 require("lazy").setup(plugins, opts)

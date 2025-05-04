@@ -1,5 +1,6 @@
 return {
   "akinsho/bufferline.nvim",
+  enabled = false,
   dependencies = {
     "kyazdani42/nvim-web-devicons",
   },
@@ -57,7 +58,7 @@ return {
         -- [focused and unfocused]. eg: { '|', '|' }
         separator_style = { "", "" }, -- | "thick" | "thin" | { 'any', 'any' },
         enforce_regular_tabs = false,
-        always_show_bufferline = true,
+        always_show_bufferline = false,
 
         custom_filter = (function(buf_number, _) -- buf_number, buf_numbers
           -- filter out filetypes you don't want to see
@@ -178,7 +179,6 @@ return {
           sp = "#ff0000"
         },
 
-
         warning = {
           fg = "#b37400",
           bg = { attribute = "bg", highlight = "BufferLineWarning" }
@@ -194,7 +194,6 @@ return {
           bg = { attribute = "bg", highlight = "BufferLineWarningSelected" },
           sp = "#ff0000"
         },
-
 
         hint = {
           fg = "#888888",
@@ -247,12 +246,11 @@ return {
 
     -- keymaps
     local nnoremap = require("endoxide.keymap").nnoremap
-    nnoremap("<S-l>", ":BufferLineCycleNext<CR>")
-    nnoremap("<S-h>", ":BufferLineCyclePrev<CR>")
-    nnoremap("<C-q>", ":bdelete<CR>")
-    nnoremap("<C-p>", ":BufferLineTogglePin<CR>")
-    nnoremap("<leader>h", ":BufferLineMovePrev<CR>")
-    nnoremap("<leader>l", ":BufferLineMoveNext<CR>")
+    -- nnoremap("<S-l>", ":BufferLineCycleNext<CR>")
+    -- nnoremap("<S-h>", ":BufferLineCyclePrev<CR>")
+    -- nnoremap("<C-p>", ":BufferLineTogglePin<CR>")
+    -- nnoremap("<leader>h", ":BufferLineMovePrev<CR>")
+    -- nnoremap("<leader>l", ":BufferLineMoveNext<CR>")
 
     nnoremap("<leader>1", ":BufferLineGoToBuffer 1<CR>")
     nnoremap("<leader>2", ":BufferLineGoToBuffer 2<CR>")
