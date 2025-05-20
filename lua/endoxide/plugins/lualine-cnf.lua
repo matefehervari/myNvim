@@ -12,10 +12,13 @@ return {
         local highlights = require("endoxide.util.highlights")
         local hl_text = highlights.hl_text
         local autocmd = vim.api.nvim_create_autocmd
+        local utils = require("endoxide.util.lua-utils")
 
         local icons = require("endoxide.icons")
         local diag_icons = icons.diagnostics
         local ui = icons.ui
+
+        local buffer_limit = 5
 
         local linecolors = {
             secondary     = mocha.surface0,
@@ -46,86 +49,151 @@ return {
             icons.diagnostics.Hint,
             icons.diagnostics.Hint,
         }
+
+        local function repr_buffer(opts)
+            local current = vim.fn.bufnr()
+            local buf = vim.fn.getbufinfo(opts.bufnr)[1]
+
+            local filename = vim.fs.basename(buf.name)
+            local ext = filename:match("%.(%a+)$")
+            local file = filename:gsub("%.(%a+)$", "")
+
+            if filename == "" then
+                file = " ~ "
+            elseif file == "" then
+                file = "." .. ext
+            end
+            if not ext then
+                ext = ""
+            end
+
+            -- pinned
+            local pinned = ""
+            if opts.pinned then
+                pinned = ui.Pin
+            end
+            local pinned_repr = " " .. pinned
+
+            -- icon
+            local icon, icon_name = webdevicon.get_icon(filename, ext, { default = true })
+            local icon_repr = hl_text(icon_name, icon)
+
+            -- diagnostics
+            local diagnostics = vim.diagnostic.count(opts.bufnr)
+            local total_diagnostics = 0
+            local highest_severity = nil
+            for severity, count in pairs(diagnostics) do
+                total_diagnostics = total_diagnostics + count
+
+                if highest_severity == nil then
+                    highest_severity = severity
+                end
+            end
+
+            -- diagnostic formatting
+            local diagnostic = ""
+            if highest_severity ~= nil then
+                diagnostic = severity_to_icon[highest_severity]
+            end
+            if total_diagnostics > 0 then
+                diagnostic = diagnostic .. " " .. total_diagnostics
+            end
+
+            -- buf text
+            local buftext = ("%s %s"):format(file, diagnostic)
+            local buftext_hl
+
+            if highest_severity ~= nil then
+                buftext_hl = "Endoxide" .. severity_to_name[highest_severity]
+            else
+                buftext_hl = "EndoxideBuffer"
+            end
+
+            if current == opts.bufnr then
+                buftext_hl = buftext_hl .. "Selected"
+            end
+
+            local buf_repr = hl_text(buftext_hl, buftext)
+
+            -- buf modified
+            local modified = ""
+            if buf.changed ~= 0 then
+                modified = ui.Circle .. " "
+            end
+
+            return ("%s %s%s %s"):format(pinned_repr, modified, icon_repr, buf_repr)
+        end
+
+
         local buffers3 = {
             function()
                 local current = vim.fn.bufnr()
-                local buffers = vim.g.endoxide.bufferspinned
-                for _, buf in ipairs(vim.g.endoxide.buffers) do
-                    table.insert(buffers, buf)
+                local pinned = vim.g.endoxide.bufferspinned
+
+                local curr_pinned = utils.find(pinned, current) ~= nil
+
+                local buffers = {}
+                local buffers_left = {}
+                local buffers_right = {}
+                local left = true
+                for _, bufnr in ipairs(vim.g.endoxide.buffers) do
+                    if bufnr == current then
+                        left = false
+                    elseif left then
+                        table.insert(buffers_left, bufnr)
+                    else
+                        table.insert(buffers_right, bufnr)
+                    end
+
+                    table.insert(buffers, bufnr)
                 end
 
                 local repr = ""
-                for i, bufnr in ipairs(buffers) do
-                    local buf = vim.fn.getbufinfo(bufnr)[1]
+                for _, bufnr in ipairs(pinned) do
+                    repr = repr .. repr_buffer { bufnr = bufnr, pinned = true }
+                end
 
-                    local filename = vim.fs.basename(buf.name)
-                    local ext = filename:match("%.(%a+)$")
-                    local file = filename:gsub("%.(%a+)$", "")
+                local display_left = buffer_limit - (not curr_pinned and 1 or 0) - (#buffers_right > 0 and not curr_pinned and 1 or 0)
+                display_left = math.min(display_left, #buffers_left)
 
-                    if filename == "" then
-                        file = " ~ "
-                    elseif file == "" then
-                        file = "." .. ext
+                local display_right = buffer_limit - (not curr_pinned and 1 or 0) - display_left
+                display_right = math.min(display_right, #buffers_right)
+
+
+                print(curr_pinned)
+                if curr_pinned then
+                    for i = 1, display_left - 1 do
+                        local bufnr = buffers_left[i]
+                        repr = repr .. repr_buffer { bufnr = bufnr }
                     end
-                    if not ext then
-                        ext = ""
+                end
+
+                if #buffers_left > display_left then
+                    repr = repr .. (" +%d "):format(#buffers_left - display_left)
+                end
+
+                if curr_pinned then
+                    repr = repr .. repr_buffer { bufnr = buffers_left[#buffers_left] }
+                end
+
+                if not curr_pinned then
+                    for i = #buffers_left - display_left + 1, #buffers_left do
+                        local bufnr = buffers_left[i]
+                        repr = repr .. repr_buffer { bufnr = bufnr }
                     end
+                end
 
-                    -- pinned
-                    local pinned = ""
-                    if i <= #vim.g.endoxide.bufferspinned then
-                        pinned = ui.Pin
-                    end
-                    local pinned_repr = " " .. pinned
+                if not curr_pinned then
+                    repr = repr .. repr_buffer { bufnr = current }
+                end
 
-                    -- icon
-                    local icon, icon_name = webdevicon.get_icon(filename, ext, { default = true })
-                    local icon_repr = hl_text(icon_name, icon)
+                for i = 1, display_right do
+                    local bufnr = buffers_right[i]
+                    repr = repr .. repr_buffer { bufnr = bufnr }
+                end
 
-                    -- diagnostics
-                    local diagnostics = vim.diagnostic.count(bufnr)
-                    local total_diagnostics = 0
-                    local highest_severity = nil
-                    for severity, count in pairs(diagnostics) do
-                        total_diagnostics = total_diagnostics + count
-
-                        if highest_severity == nil then
-                            highest_severity = severity
-                        end
-                    end
-
-                    -- diagnostic formatting
-                    local diagnostic = ""
-                    if highest_severity ~= nil then
-                        diagnostic = severity_to_icon[highest_severity]
-                    end
-                    if total_diagnostics > 0 then
-                        diagnostic = diagnostic .. " " .. total_diagnostics
-                    end
-
-                    -- buf text
-                    local buftext = ("%s %s"):format(file, diagnostic)
-                    local buftext_hl
-
-                    if highest_severity ~= nil then
-                        buftext_hl = "Endoxide" .. severity_to_name[highest_severity]
-                    else
-                        buftext_hl = "EndoxideBuffer"
-                    end
-
-                    if current == bufnr then
-                        buftext_hl = buftext_hl .. "Selected"
-                    end
-
-                    local buf_repr = hl_text(buftext_hl, buftext)
-
-                    -- buf modified
-                    local modified = ""
-                    if buf.changed ~= 0 then
-                        modified = ui.Circle .. " "
-                    end
-
-                    repr = repr .. ("%s %s%s %s"):format(pinned_repr, modified, icon_repr, buf_repr)
+                if #buffers_right > display_right then
+                    repr = repr .. (" +%d "):format(#buffers_right - 1)
                 end
 
                 return repr
@@ -144,20 +212,20 @@ return {
 
 
         local get_active_lsp = function()
-          local msg = "[No Lsp]"
-          local buf_ft = vim.api.nvim_get_option_value("filetype", {})
-          local clients = vim.lsp.get_clients { bufnr = 0 }
-          if next(clients) == nil then
-            return msg
-          end
-
-          for _, client in ipairs(clients) do
-            local filetypes = client.config.filetypes
-            if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
-              return "[" .. client.name .. "]"
+            local msg = "[No Lsp]"
+            local buf_ft = vim.api.nvim_get_option_value("filetype", {})
+            local clients = vim.lsp.get_clients { bufnr = 0 }
+            if next(clients) == nil then
+                return msg
             end
-          end
-          return msg
+
+            for _, client in ipairs(clients) do
+                local filetypes = client.config.filetypes
+                if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
+                    return "[" .. client.name .. "]"
+                end
+            end
+            return msg
         end
 
 
@@ -208,10 +276,13 @@ return {
             lualine_a = { mode },
             lualine_b = {},
             lualine_c = { buffers3 },
-            lualine_x = { macro,  diagnostics, diff, get_active_lsp, filetype },
+            lualine_x = { macro, diagnostics, diff, get_active_lsp, filetype },
             lualine_y = { location },
             lualine_z = { progress }
         }
+
+
+
 
         local inactive_sections = {
             lualine_a = {},

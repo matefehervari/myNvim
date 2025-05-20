@@ -95,8 +95,8 @@ local function setup()
 
     -- Buffer info
     autocmd(
-        { "BufRead", "BufEnter", "BufDelete", "SessionLoadPost", "TextChanged", "TextChangedI", "BufWritePost",
-            "CursorMoved", "RecordingEnter",},
+        { "BufRead", "BufEnter", "BufDelete", "SessionLoadPost", "TextChanged", "TextChangedI",
+            "CursorMoved", "RecordingEnter", "BufWritePost" },
         {
             group = endoxideGroup,
             callback = function()
@@ -106,7 +106,7 @@ local function setup()
 
     -- Deferred updates
     autocmd(
-        {"RecordingLeave", "ModeChanged"},
+        { "RecordingLeave", "ModeChanged", "BufWritePost" },
         {
             group = endoxideGroup,
             callback = function()
@@ -125,7 +125,7 @@ local function setup()
     autocmd("TextYankPost", {
         desc = "Highlight when yanking text",
         group = endoxideGroup,
-        callback = function ()
+        callback = function()
             vim.highlight.on_yank()
         end
     })

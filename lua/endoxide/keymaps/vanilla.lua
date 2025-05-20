@@ -127,7 +127,7 @@ end)
 -- execute and source
 nnoremap("<leader><leader>x", "<cmd>source %<CR>")
 nnoremap("<leader>x", "<cmd>.lua<CR>")
-vnoremap("<leader>x", "<cmd>lua<CR>")
+vnoremap("<leader>x", "<cmd>'<,'>lua<CR>")
 
 -- Custom user commmands
 -- duplicate with replace
