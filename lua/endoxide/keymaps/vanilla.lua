@@ -20,7 +20,7 @@ inoremap("<A-o>", "_<ESC>moo<ESC>`os")
 inoremap("<A-O>", "_<ESC>moO<ESC>`os")
 
 -- quick writing
-nnoremap("<leader>w", function ()
+nnoremap("<leader>w", function()
     vim.cmd("silent! write")
 end)
 
@@ -45,7 +45,7 @@ inoremap("<C-h>", "<Left>")
 inoremap("<C-l>", "<Right>")
 
 -- clears luasnip jumpable
-inoremap("<ESC>", function ()
+inoremap("<ESC>", function()
     vim.cmd("stopinsert")
     local luasnip = require("luasnip")
     if luasnip.jumpable() then
@@ -53,7 +53,7 @@ inoremap("<ESC>", function ()
     end
 end)
 vnoremap("<ESC>", "<C-c>")
-snoremap("<ESC>", function ()
+snoremap("<ESC>", function()
     vim.cmd("stopinsert")
     local luasnip = require("luasnip")
     if luasnip.jumpable() then
@@ -92,14 +92,14 @@ nnoremap("<leader>cd", function()
 end)
 
 -- visual bracketing
-vnoremap("<leader>(",   "s()<Esc><Left>p")
-vnoremap("<leader>)",   "s()<Esc><Left>p")
-vnoremap("<leader>{",   "s{}<Esc><Left>p")
-vnoremap("<leader>}",   "s{}<Esc><Left>p")
-vnoremap("<leader>[",   "s[]<Esc><Left>p")
-vnoremap("<leader>]",   "s[]<Esc><Left>p")
-vnoremap("<leader><",   "s<><Esc><Left>p")
-vnoremap("<leader>>",   "s<><Esc><Left>p")
+vnoremap("<leader>(", "s()<Esc><Left>p")
+vnoremap("<leader>)", "s()<Esc><Left>p")
+vnoremap("<leader>{", "s{}<Esc><Left>p")
+vnoremap("<leader>}", "s{}<Esc><Left>p")
+vnoremap("<leader>[", "s[]<Esc><Left>p")
+vnoremap("<leader>]", "s[]<Esc><Left>p")
+vnoremap("<leader><", "s<><Esc><Left>p")
+vnoremap("<leader>>", "s<><Esc><Left>p")
 vnoremap([[<leader>"]], [[s""<Esc><Left>p]])
 vnoremap([[<leader>']], [[s''<Esc><Left>p]])
 vnoremap([[<leader>`]], [[s``<Esc><Left>p]])
@@ -109,7 +109,7 @@ nnoremap("gds", [[:s/\S\zs\s\{2,}/ /g<CR>]])
 vnoremap("gds", [[:s/\S\zs\s\{2,}/ /g<CR>]])
 
 -- run program
-nnoremap("<leader>rt", function ()
+nnoremap("<leader>rt", function()
     local file_name = vim.api.nvim_buf_get_name(0)
     local file_type = vim.bo.filetype
 
@@ -122,9 +122,14 @@ nnoremap("<leader>rt", function ()
     elseif file_type == "c" then
         vim.cmd(":terminal gcc " .. file_name .. "; ./a.out")
     end
-
 end)
+
+-- execute and source
+nnoremap("<leader><leader>x", "<cmd>source %<CR>")
+nnoremap("<leader>x", "<cmd>.lua<CR>")
+vnoremap("<leader>x", "<cmd>lua<CR>")
 
 -- Custom user commmands
 -- duplicate with replace
-nnoremap("yd", "<cmd>DuplicateWithReplace<CR>")
+nnoremap("gyd", "<cmd>DuplicateWithReplace<CR>")
+vnoremap("gyd", "<cmd>DuplicateWithReplace<CR>")

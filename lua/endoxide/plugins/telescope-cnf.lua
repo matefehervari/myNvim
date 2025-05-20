@@ -132,15 +132,17 @@ return {
 
         -- Mappings
 
-        nnoremap("<leader>ff", root_mod(builtin.find_files, { no_parent_ignore = true }),
-            { desc = "Find files in project / cwd" })
-        nnoremap("<leader>fd", ":Telescope find_files cwd=",
-            { desc = "Fuzzy find files in specified directory" })
-        nnoremap("<leader>fg", ":Telescope git_files<cr>",
-            { desc = "Fuzzy find files in current repository" })
-        nnoremap("<leader>fs", root_mod(builtin.live_grep), { desc = "Find string in cwd" })
+        nnoremap("<leader>fb", builtin.buffers,               { desc = "Serach buffers" })
+        nnoremap("<leader>fc", builtin.highlights,            { desc = "Search highlight colours" })
+        nnoremap("<leader>fd", ":Telescope find_files cwd=",  { desc = "Fuzzy find files in specified directory" })
+        nnoremap("<leader>ff", root_mod(builtin.find_files,   { no_parent_ignore = true }), { desc = "Find files in project / cwd" })
+        nnoremap("<leader>fg", ":Telescope git_files<cr>",    { desc = "Fuzzy find files in current repository" })
+        nnoremap("<leader>fh", builtin.help_tags,             { desc = "Search help tags" })
+        nnoremap("<leader>fk", builtin.keymaps,               { desc = "Search keymaps" })
+        nnoremap("<leader>fn", ":Telescope notify<CR>",       { desc = "Search notifications" })
+        nnoremap("<leader>fq", ":Telescope persisted<CR>",    { desc = "Search through sessions" })
+        nnoremap("<leader>fs", root_mod(builtin.live_grep),   { desc = "Find string in cwd" })
         nnoremap("<leader>fw", root_mod(builtin.grep_string), { desc = "Find string under cursor in project / cwd" })
-        nnoremap("<leader>fq", ":Telescope persisted<CR>", { desc = "Search through sessions" })
 
         -- colors
         local hl = require("endoxide.util.highlights").hl

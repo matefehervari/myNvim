@@ -145,6 +145,12 @@ local function ColorMyPencils()
         bg = bg("Normal"),
         bold = true,
     })
+
+    hl("WinSeparator", {
+        fg = fg("Special"),
+        bg = bg("Special"),
+        -- bold = true,
+    })
 end
 
 local M = {}

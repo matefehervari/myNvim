@@ -132,6 +132,33 @@ return {
             end
         }
 
+        local macro = {
+            function()
+                if vim.fn.reg_recording() ~= "" then
+                    return "@" .. vim.fn.reg_recording()
+                else
+                    return ""
+                end
+            end
+        }
+
+
+        local get_active_lsp = function()
+          local msg = "[No Lsp]"
+          local buf_ft = vim.api.nvim_get_option_value("filetype", {})
+          local clients = vim.lsp.get_clients { bufnr = 0 }
+          if next(clients) == nil then
+            return msg
+          end
+
+          for _, client in ipairs(clients) do
+            local filetypes = client.config.filetypes
+            if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
+              return "[" .. client.name .. "]"
+            end
+          end
+          return msg
+        end
 
 
         local diagnostics = {
@@ -181,7 +208,7 @@ return {
             lualine_a = { mode },
             lualine_b = {},
             lualine_c = { buffers3 },
-            lualine_x = { diagnostics, diff, 'encoding', filetype },
+            lualine_x = { macro,  diagnostics, diff, get_active_lsp, filetype },
             lualine_y = { location },
             lualine_z = { progress }
         }
@@ -256,7 +283,7 @@ return {
 
         lualine.setup(config)
 
-        autocmd({"DiagnosticChanged"}, {
+        autocmd({ "DiagnosticChanged" }, {
             callback = function()
                 pcall(require("lualine").refresh)
             end

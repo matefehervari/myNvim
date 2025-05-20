@@ -51,6 +51,17 @@ local function math_escaped(str, symbol)
     return math() and is_escaped(str, symbol)
 end
 
+local function all(...)
+    local preds = arg
+    return function(str, symbol)
+        local result = true
+        for _, pred in ipairs(preds) do
+            result = result and pred(str, symbol)
+        end
+        return result
+    end
+end
+
 
 ------------------------------------------------- Math mode environments
 
@@ -631,9 +642,11 @@ local environment_snippets = {
             "\\begin{examquestion}{<>}{<>}{<>}\n    \\begin{enumerate}\n        <>\n    \\end{enumerate}\n\\end{examquestion}",
             { i(1), i(2), i(3), i(4) })),
     s({ trig = "listing" },
-        fmt_angle("\\begin{lstlisting}\n<>\n\\end{lstlisting}", { i(1) })),
-    s({ trig = "\\lstinline{`", snippetType = "autosnippet" },
-        fmt_angle("\\begin{lstlisting}\n<>\n\\end{lstlisting", { i(1) })),
+        fmt_angle(
+        "\\begin{grouped}\n\\begin{lstlisting}[caption={<>},label={lst:<>}]\n<>\n\\end{lstlisting}\\end{grouped}",
+            { i(1), i(2), i(3) })),
+    s({ trig = "grouped" },
+        fmt_angle("\\begin{grouped}\n<>\n\\end{grouped}", { i(1) })),
     s({ trig = "RTP" },
         fmt_angle("\\begin{RTP}{<>}\n  <>\n\\end{RTP}", { i(1), i(2) })),
     s({ trig = "cases", condition = notMath },
@@ -736,9 +749,9 @@ local trig_mappings = {
 }
 
 local bracket_sizes = {
-    ["lr"]     = { l = [[\left]],  r = [[\right]] },
-    ["big"]    = { l = [[\bigl]],  r = [[\bigr]] },
-    ["Big"]    = { l = [[\Bigl]],  r = [[\Bigr]] },
+    ["lr"]     = { l = [[\left]], r = [[\right]] },
+    ["big"]    = { l = [[\bigl]], r = [[\bigr]] },
+    ["Big"]    = { l = [[\Bigl]], r = [[\Bigr]] },
     ["bi_{g}"] = { l = [[\biggl]], r = [[\biggr]] },
     ["Bi_{g}"] = { l = [[\Biggl]], r = [[\Biggr]] },
 }
@@ -940,11 +953,17 @@ local misc_snippets = {
             wordTrig = false
         },
         t("\\signed{[1 mark]}")),
-    s({ trig = "lsti", snippetType = "autosnippet", condition = notMath },
+    s({ trig = "lsti", snippetType = "autosnippet", condition = all(notMath, not_escaped) },
         fmt_angle("\\lstinline{<>}", { i(1) })),
+
+    s({ trig = "tlst", snippetType = "autosnippet", condition = all(notMath, not_escaped) },
+        fmt_angle("\\lstinline[]$<>$", { i(1) })),
 
     s({ trig = "`", snippetType = "autosnippet", condition = notMath },
         fmt_angle("\\lstinline{<>}", { i(1) })),
+
+    s({ trig = "\\lstinline{`", snippetType = "autosnippet", condition = notMath, priority = 1001 },
+        fmt_angle("\\begin{lstlisting}\n<>\n\\end{lstlisting", { i(1) })),
 
     -- Semantics
     s({ trig = "tfun", snippetType = "autosnippet", condition = math },
@@ -1040,6 +1059,11 @@ local misc_snippets = {
         t([[\ket{\Psi^{+}}]])),
     s({ trig = "bps-", condition = math_not_escaped, wordTrig = false, snippetType = "autosnippet" },
         t([[\ket{\Psi^{-}}]])),
+
+
+    s({ trig = "multirow", condition = all(notMath, not_escaped) },
+        fmt_angle("\\multirow{<>}{<>}{<>}", { i(1), i(2, "*"), i(3) })),
+
 }
 ------------------------------------ Add the snippets
 

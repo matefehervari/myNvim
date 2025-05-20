@@ -72,6 +72,7 @@ return {
       filters = {
           custom = {
               "__pycache__",
+              "*.gz"
           }
       }
     }

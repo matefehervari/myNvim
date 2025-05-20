@@ -95,13 +95,40 @@ local function setup()
 
     -- Buffer info
     autocmd(
-    { "BufRead", "BufEnter", "BufDelete", "SessionLoadPost", "TextChanged", "TextChangedI", "BufWritePost", "CursorMoved" },
+        { "BufRead", "BufEnter", "BufDelete", "SessionLoadPost", "TextChanged", "TextChangedI", "BufWritePost",
+            "CursorMoved", "RecordingEnter",},
         {
             group = endoxideGroup,
             callback = function()
                 pcall(require("lualine").refresh)
             end,
         })
+
+    -- Deferred updates
+    autocmd(
+        {"RecordingLeave", "ModeChanged"},
+        {
+            group = endoxideGroup,
+            callback = function()
+                local status_ok, lualine = pcall(require, "lualine")
+                if not status_ok then
+                    return
+                end
+
+                local timer = vim.uv.new_timer()
+                if timer then
+                    timer:start(50, 0, vim.schedule_wrap(lualine.refresh))
+                end
+            end,
+        })
+
+    autocmd("TextYankPost", {
+        desc = "Highlight when yanking text",
+        group = endoxideGroup,
+        callback = function ()
+            vim.highlight.on_yank()
+        end
+    })
 end
 
 local M = {}

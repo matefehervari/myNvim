@@ -2,7 +2,6 @@ return {
   "L4MON4D3/LuaSnip",
   dependencies = { "rafamadriz/friendly-snippets" },
   event = "VeryLazy",
-  keys = function () end,
   config = function()
     local ls = require("luasnip")
     local vscode = require("luasnip.loaders.from_vscode")

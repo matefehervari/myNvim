@@ -16,6 +16,7 @@ local ref_callback = tb_ok and tb.lsp_references or vim.lsp.buf.references
 local M = {}
 
 M.setup = function()
+    vim.notify("LSP Setup")
     local signs = {
         { name = "DiagnosticSignError", text = "" },
         { name = "DiagnosticSignWarn", text = "" },
