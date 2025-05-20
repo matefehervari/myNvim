@@ -4,8 +4,8 @@ return function(server_name)
   if server_name == "jdtls" then goto continue end -- server alrady checked in handlers
 
   local forced_opts = {
-    on_attach = require("endoxide.lsp.lsp-setup").on_attach,
-    capabilities = require("endoxide.lsp.lsp-setup").capabilities,
+    on_attach = require("endoxide.lsp.lsp-onattach").on_attach,
+    capabilities = require("endoxide.lsp.lsp-onattach").capabilities,
   }
 
   local opts = {};

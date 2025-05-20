@@ -100,7 +100,10 @@ local function setup()
         {
             group = endoxideGroup,
             callback = function()
-                pcall(require("lualine").refresh)
+                local status_ok, lualine = pcall(require, "lualine")
+                if status_ok then
+                    lualine.refresh()
+                end
             end,
         })
 

@@ -160,7 +160,6 @@ return {
                 display_right = math.min(display_right, #buffers_right)
 
 
-                print(curr_pinned)
                 if curr_pinned then
                     for i = 1, display_left - 1 do
                         local bufnr = buffers_left[i]
@@ -353,6 +352,7 @@ return {
         }
 
         lualine.setup(config)
+        vim.o.laststatus = 3
 
         autocmd({ "DiagnosticChanged" }, {
             callback = function()

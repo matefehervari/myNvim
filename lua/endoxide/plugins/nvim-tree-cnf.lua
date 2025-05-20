@@ -13,9 +13,9 @@ return {
     local nnoremap = require("endoxide.keymap").nnoremap
 
     -- keymaps
-    nnoremap("<leader>e", function ()
-      api.tree.toggle()
-    end)
+    -- nnoremap("<leader>e", function ()
+    --   api.tree.toggle()
+    -- end)
 
     -- config
     local config = {

@@ -72,6 +72,7 @@ local function ColorMyPencils()
     })
 
     hl("FloatBorder", {
+        fg = fg("Special"),
         bg = "None"
     })
 
@@ -81,10 +82,13 @@ local function ColorMyPencils()
     })
 
     hl("StatusLine", {
+        fg = fg("Special"),
+        -- bg = fg("Special"),
         bg = "None"
     })
     hl("StatusLineNC", {
-        bg = "None"
+        fg = fg("Special"),
+        bg = fg("Special"),
     })
 
     hl("DiagnosticVirtualTextError", {
@@ -151,7 +155,14 @@ local function ColorMyPencils()
         bg = bg("Special"),
         -- bold = true,
     })
+
+    hl("VertSplit", {
+        fg = fg("Special"),
+        bg = bg("Special"),
+        -- bold = true,
+    })
 end
+
 
 local M = {}
 M.ColorMyPencils = ColorMyPencils

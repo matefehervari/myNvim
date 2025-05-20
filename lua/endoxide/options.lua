@@ -45,7 +45,9 @@ vim.opt.signcolumn = "yes"
 
 -- Give more space for displaying messages.
 vim.opt.cmdheight = 1
-vim.opt.laststatus = 1
+vim.o.laststatus = 3
+vim.opt_global.laststatus = 3
+vim.opt.laststatus = 3
 
 -- Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
 -- delays and poor user experience.
