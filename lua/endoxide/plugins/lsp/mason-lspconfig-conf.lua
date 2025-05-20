@@ -1,6 +1,6 @@
 return {
     "williamboman/mason-lspconfig.nvim",
-    dependencies = {
+    requires = {
         "williamboman/mason.nvim",
         "neovim/nvim-lspconfig",
     },
