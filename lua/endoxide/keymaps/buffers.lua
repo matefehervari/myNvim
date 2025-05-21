@@ -48,7 +48,7 @@ end)
 
 nnoremap("<C-q>", function()
     -- vim.cmd("bdel")
-    vim.api.nvim_buf_delete(0, {force = false, unload = false})
+    vim.api.nvim_buf_delete(0, { force = false, unload = false })
 end)
 
 nnoremap("<leader>h", function()
@@ -137,7 +137,7 @@ nnoremap("<leader>l", function()
     require("lualine").refresh()
 end)
 
-nnoremap("<C-p>", function ()
+nnoremap("<C-p>", function()
     local current = vim.fn.bufnr()
     local buffers = vim.g.endoxide.buffers
     local bufferspinned = vim.g.endoxide.bufferspinned
@@ -170,3 +170,18 @@ nnoremap("<C-p>", function ()
     vim.g.endoxide = vim.tbl_extend('keep', { buffers = buffers, bufferspinned = bufferspinned }, vim.g.endoxide)
     require("lualine").refresh()
 end)
+
+nnoremap(
+    "<leader>qa",
+    function()
+        local current = vim.fn.bufnr()
+        local buffers = vim.g.endoxide.buffers
+
+        for _, bufnr in ipairs(buffers) do
+            if bufnr ~= current then
+                vim.api.nvim_buf_delete(bufnr, { force = false, unload = false })
+            end
+        end
+    end,
+    { desc = "Delete all other buffers" }
+)
