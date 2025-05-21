@@ -192,7 +192,7 @@ return {
                 end
 
                 if #buffers_right > display_right then
-                    repr = repr .. (" +%d "):format(#buffers_right - 1)
+                    repr = repr .. (" +%d "):format(#buffers_right - display_right)
                 end
 
                 return repr
