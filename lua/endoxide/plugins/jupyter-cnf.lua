@@ -1,3 +1,4 @@
 return {
-    "untitled-ai/jupyter_ascending.vim"
+    "untitled-ai/jupyter_ascending.vim",
+    enabled = false,
 }
