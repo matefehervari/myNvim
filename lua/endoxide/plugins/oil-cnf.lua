@@ -12,7 +12,6 @@ return {
         local oil = require("oil")
         local nnoremap = require("endoxide.keymap").nnoremap
 
-
         nnoremap("<leader>e", oil.open_float)
 
         local config = {
@@ -23,7 +22,7 @@ return {
                 ["<C-h>"] = { "actions.select", opts = { horizontal = true } },
                 ["<C-t>"] = { "actions.select", opts = { tab = true } },
                 ["<C-p>"] = "actions.preview",
-                ["C-c>"] = { "actions.close", mode = "n" },
+                ["<Esc>"] = { "actions.close", mode = "n" },
                 ["<C-l>"] = "actions.refresh",
                 ["-"] = { "actions.parent", mode = "n" },
                 ["_"] = { "actions.open_cwd", mode = "n" },
@@ -35,6 +34,6 @@ return {
                 ["g\\"] = { "actions.toggle_trash", mode = "n" },
             },
         }
-        oil.setup()
+        oil.setup(config)
     end
 }
