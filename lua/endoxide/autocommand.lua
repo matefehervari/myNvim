@@ -130,6 +130,7 @@ local function setup()
             vim.highlight.on_yank()
         end
     })
+
 end
 
 local M = {}

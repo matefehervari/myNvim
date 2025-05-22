@@ -795,7 +795,6 @@ local smart_math_after = function()
         local char = vim.api.nvim_buf_get_text(0, row, col, row, col + 1, {})[1]
 
         if char == "$" and math() then
-            vim.notify("smart_math_after: deleting")
             vim.api.nvim_buf_set_text(0, row, col, row, col + 1, {})
         end
     end

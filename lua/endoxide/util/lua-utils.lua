@@ -1,8 +1,8 @@
 local M = {}
 
-M.insert_all = function(a, b)
-    for _, elem in ipairs(b) do
-        table.insert(a, elem)
+M.insert_all = function(tbl, values)
+    for _, elem in ipairs(values) do
+        table.insert(tbl, elem)
     end
 end
 

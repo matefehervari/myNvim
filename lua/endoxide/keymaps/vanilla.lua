@@ -62,6 +62,12 @@ snoremap("<ESC>", function()
 end)
 tnoremap("<ESC>", [[<C-\><C-n>]])
 cnoremap("<ESC>", "<C-c>")
+nnoremap("<ESC>", function ()
+    local buf_ft = vim.api.nvim_get_option_value("filetype", {})
+    if buf_ft == "checkhealth" then
+        vim.cmd("tabclose")
+    end
+end, {desc = "Normal mode escape actions"})
 
 -- move lines around
 nnoremap("<C-Up>", ":m .-2<CR>==")

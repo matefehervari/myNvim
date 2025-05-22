@@ -18,6 +18,8 @@ return {
         local diag_icons = icons.diagnostics
         local ui = icons.ui
 
+        local lang_servers = require("endoxide.data.lang_lsps")
+
         local buffer_limit = 5
 
         local linecolors = {
@@ -153,7 +155,8 @@ return {
                     repr = repr .. repr_buffer { bufnr = bufnr, pinned = true }
                 end
 
-                local display_left = buffer_limit - (not curr_pinned and 1 or 0) - (#buffers_right > 0 and not curr_pinned and 1 or 0)
+                local display_left = buffer_limit - (not curr_pinned and 1 or 0) -
+                    (#buffers_right > 0 and not curr_pinned and 1 or 0)
                 display_left = math.min(display_left, #buffers_left)
 
                 local display_right = buffer_limit - (not curr_pinned and 1 or 0) - display_left
@@ -209,7 +212,6 @@ return {
             end
         }
 
-
         local get_active_lsp = function()
             local msg = hl_text("EndoxideLspDisconnected", "󱐋 No Lsp")
             local buf_ft = vim.api.nvim_get_option_value("filetype", {})
@@ -218,18 +220,22 @@ return {
                 return msg
             end
 
-            local min_filetypes
-            local min_name = nil
+            local client_name = nil
             for _, client in ipairs(clients) do
                 local filetypes = client.config.filetypes
-                if filetypes and vim.gn.index(filetypes, buf_ft) ~= -1 and (not filetypes or #filetypes < min_filetypes) then
-                    min_filetypes = filetypes
-                    min_name = client.name
+
+                if filetypes and
+                    vim.fn.index(filetypes, buf_ft) ~= -1 and
+                    (
+                        not client_name or (vim.fn.index(lang_servers, client_name) == -1 and
+                            vim.fn.index(lang_servers, client.name) ~= -1)
+                    ) then
+                    client_name = client.name
                 end
             end
 
-            if min_name then
-                return hl_text("EndoxideLspConnected", "󱘖 " .. min_name)
+            if client_name then
+                return hl_text("EndoxideLspConnected", "󱘖 " .. client_name)
             end
             return msg
         end
