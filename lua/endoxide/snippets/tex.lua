@@ -25,12 +25,16 @@ local function is_escaped(str, symbol)
 end
 
 -- conditions
+local function never()
+    return false
+end
+
 local function math()
     return vim.g.tex_in_math_zone
 end
 
 local function notMath()
-    return not math()
+    return not vim.g.tex_in_math_zone
 end
 
 -- Some snippets violate math mode detection before the snippet is triggered,
@@ -304,6 +308,7 @@ end
 ------------------------------------ Symbols
 
 local symbolic_trig_symbol_nodes = {
+    ["  "]       = { t("\\ ") },
     ["+-"]       = { t("\\pm") },
     ["-+"]       = { t("\\mp") },
     ["..."]      = { t("\\dots") },
@@ -340,6 +345,8 @@ local symbols_nodes = {
     ["pfun"]         = { t("\\pfun") },
     ["and"]          = { t("\\land") },
     ["or "]          = { t("\\lor ") },
+    ["true"]         = { t("\\top") },
+    ["false"]        = { t("\\perp ") },
     ["And"]          = { t("\\bigwedge") },
     ["Or "]          = { t("\\bigvee ") },
     ["inn"]          = { t("\\in") },
@@ -643,7 +650,7 @@ local environment_snippets = {
             { i(1), i(2), i(3), i(4) })),
     s({ trig = "listing" },
         fmt_angle(
-        "\\begin{grouped}\n\\begin{lstlisting}[caption={<>},label={lst:<>}]\n<>\n\\end{lstlisting}\\end{grouped}",
+            "\\begin{grouped}\n\\begin{lstlisting}[caption={<>},label={lst:<>}]\n<>\n\\end{lstlisting}\\end{grouped}",
             { i(1), i(2), i(3) })),
     s({ trig = "grouped" },
         fmt_angle("\\begin{grouped}\n<>\n\\end{grouped}", { i(1) })),
@@ -767,6 +774,39 @@ for braktrig, braks in pairs(trig_mappings) do
         table.insert(lr_snippets, snip)
     end
 end
+
+local smart_math_idx = function(idx)
+    return function(_, parent)
+        local dollar = parent.snippet.captures[idx] == "$"
+        if math() then
+            return dollar and "" or "$"
+        end
+
+        return dollar and "$" or ""
+    end
+end
+
+local smart_math = smart_math_idx(1)
+
+local smart_math_after = function()
+    local function delete_after()
+        local row = vim.fn.line(".") - 1
+        local col = vim.fn.col(".") - 1
+        local char = vim.api.nvim_buf_get_text(0, row, col, row, col + 1, {})[1]
+
+        if char == "$" and math() then
+            vim.notify("smart_math_after: deleting")
+            vim.api.nvim_buf_set_text(0, row, col, row, col + 1, {})
+        end
+    end
+    local timer = vim.uv.new_timer()
+    if timer then
+        timer:start(50, 0, vim.schedule_wrap(delete_after))
+    end
+
+    return ""
+end
+
 
 ------------------------------------ Misc
 
@@ -972,8 +1012,6 @@ local misc_snippets = {
     s({ trig = "fun", snippetType = "autosnippet", condition = math },
         fmt_angle("\\text{fn}\\ <> \\implies <>", { i(1), i(2) })),
 
-    s({ trig = "if", condition = math },
-        fmt_angle("\\text{if}\\ <>\\ \\text{then}\\ <>\\ \\text{else}\\ <>", { i(1), i(2), i(3) })),
 
     s({ trig = "if2", condition = math },
         fmt_angle("\\text{if}\\ <>\\ \\text{then}\\ <>", { i(1), i(2) })),
@@ -1063,6 +1101,62 @@ local misc_snippets = {
 
     s({ trig = "multirow", condition = all(notMath, not_escaped) },
         fmt_angle("\\multirow{<>}{<>}{<>}", { i(1), i(2, "*"), i(3) })),
+
+    -- Hoare Logic
+    s({ trig = "htrip", show_condition = math },
+        fmt_angle([[\{ <> \}\ <>\ \{ <> \}]], { i(1, "P"), i(2, "C"), i(3, "Q") })),
+
+    -- Hoare math (escape math for code)
+    -- s({ trig = "as", show_condition = never, name = "assign" },
+    --     fmt("{} := {}", { i(1, "X"), i(2, "E") })),
+
+    s({
+            trig = "(%a)%s*asn%s*(.+)", -- add subscript for variables
+            regTrig = true,
+            wordTrig = false,
+            condition = math,
+        },
+
+        fmt_angle("<> := <>",
+            { f(function(_, parent)
+                return parent.snippet.captures[1]
+            end),
+                f(function(_, parent)
+                    return parent.snippet.captures[2]
+                end),
+            })
+    ),
+
+    s({ trig = "(%$?)while", show_condition = never, regTrig = true, wordTrig = false },
+        fmt_angle("<>\\lstinline{while} $<>$ \\lstinline{do} $<>", { f(smart_math), i(1, "B"), i(2, "C") })),
+
+    s({ trig = "(%$?)a_{l} oc", show_condition = never, regTrig = true, wordTrig = false },
+        fmt_angle("<>\\lstinline{alloc}$(<>)", { f(smart_math), i(1) })),
+    s({ trig = "(%$?)dispose", show_condition = never, regTrig = true, wordTrig = false },
+        fmt_angle("<>\\lstinline{dispose}$(<>)", { f(smart_math), i(1) })),
+    s({ trig = "(%$?)if", show_condition = never, regTrig = true, wordTrig = false },
+        fmt_angle("<>\\lstinline{if} $<>$ \\lstinline{then} $<>$ \\lstinline{else} $<>",
+            { f(smart_math), i(1, "B"), i(2, "C_{1}"), i(3, "C_{2}") })),
+    s({ trig = "(%$?)\\nu \\ll", show_condition = never, regTrig = true, wordTrig = false },
+        fmt_angle("<>\\lstinline{null}<>", { f(smart_math), f(smart_math_after) })),
+
+
+    s({
+            trig = "(%a)%s?sub%s?(.+)", -- add subscript for variables
+            regTrig = true,
+            wordTrig = false,
+            condition = math,
+        },
+
+        fmt_angle("[<>/<>]",
+            { f(function(_, parent)
+                return parent.snippet.captures[2]
+            end),
+                f(function(_, parent)
+                    return parent.snippet.captures[1]
+                end),
+            })
+    ),
 
 }
 ------------------------------------ Add the snippets
