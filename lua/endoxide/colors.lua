@@ -150,6 +150,17 @@ local function ColorMyPencils()
         bold = true,
     })
 
+    hl("EndoxideLspConnected", {
+        fg = "#32a852",
+        bg = bg("Normal"),
+    })
+
+    hl("EndoxideLspDisconnected", {
+        fg = fg("TabLine"),
+        bg = bg("Normal"),
+    })
+
+
     hl("WinSeparator", {
         fg = fg("Special"),
         bg = bg("Special"),

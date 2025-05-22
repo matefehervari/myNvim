@@ -211,22 +211,28 @@ return {
 
 
         local get_active_lsp = function()
-            local msg = "[No Lsp]"
+            local msg = hl_text("EndoxideLspDisconnected", "󱐋 No Lsp")
             local buf_ft = vim.api.nvim_get_option_value("filetype", {})
             local clients = vim.lsp.get_clients { bufnr = 0 }
             if next(clients) == nil then
                 return msg
             end
 
+            local min_filetypes
+            local min_name = nil
             for _, client in ipairs(clients) do
                 local filetypes = client.config.filetypes
-                if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
-                    return "[" .. client.name .. "]"
+                if filetypes and vim.gn.index(filetypes, buf_ft) ~= -1 and (not filetypes or #filetypes < min_filetypes) then
+                    min_filetypes = filetypes
+                    min_name = client.name
                 end
+            end
+
+            if min_name then
+                return hl_text("EndoxideLspConnected", "󱘖 " .. min_name)
             end
             return msg
         end
-
 
         local diagnostics = {
             "diagnostics",
