@@ -51,8 +51,6 @@ local function setup()
     autocmd("LspAttach", {
         group = endoxideGroup,
         callback = function()
-            vim.lsp.inlay_hint.enable()
-
             nnoremap("yok", function()
                 local enabled = not vim.lsp.inlay_hint.is_enabled({})
                 vim.lsp.inlay_hint.enable(enabled)
