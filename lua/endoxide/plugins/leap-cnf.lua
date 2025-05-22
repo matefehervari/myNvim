@@ -1,12 +1,15 @@
 return {
   "ggandor/leap.nvim",
   config = function ()
-    local k = require("endoxide.keymap")
-    local nnoremap = k.nnoremap
+    local leap = require("leap")
 
-    -- leap.create_default_mappings()
-    nnoremap("<leader>s", "<Plug>(leap-forward)")
-    nnoremap("<leader>S", "<Plug>(leap-backward)")
-    nnoremap("gs", "<Plug>(leap-from-window)")
+    local opts = {
+        safe_labels = "fnut/FNLHMUGTZ?",
+        labels = "fnjklhodweimbuyvgtaqpcxz/FNJKLHODWEIMBUYVRGTAQPCXZ?",
+    }
+
+    for key, value in pairs(opts) do
+        leap.opts[key] = value
+    end
   end
 }
