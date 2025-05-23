@@ -4,8 +4,8 @@ local vnoremap = Remap.vnoremap
 
 nnoremap("gf", function() -- format file
   vim.lsp.buf.format()
-end)
+end, {desc="LSP format buffer"})
 
 vnoremap("gf", function() -- format file
   vim.lsp.buf.format()
-end)
+end, {desc="LSP format lines"})

@@ -12,7 +12,7 @@ return {
         local oil = require("oil")
         local nnoremap = require("endoxide.keymap").nnoremap
 
-        nnoremap("<leader>e", oil.open_float)
+        nnoremap("<leader>e", oil.open_float, {desc="Open oil"})
 
         local config = {
             keymaps = {

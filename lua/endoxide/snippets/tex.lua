@@ -1103,7 +1103,10 @@ local misc_snippets = {
 
     -- Hoare Logic
     s({ trig = "htrip", show_condition = math },
-        fmt_angle([[\{ <> \}\ <>\ \{ <> \}]], { i(1, "P"), i(2, "C"), i(3, "Q") })),
+        fmt_angle(
+            [[\{ <> \}\ <>\ \{ <> \}]],
+            { i(1, "P"), i(2, "C"), i(3, "Q") }
+        )),
 
     -- Hoare math (escape math for code)
     -- s({ trig = "as", show_condition = never, name = "assign" },
@@ -1130,14 +1133,36 @@ local misc_snippets = {
         fmt_angle("<>\\lstinline{while} $<>$ \\lstinline{do} $<>", { f(smart_math), i(1, "B"), i(2, "C") })),
 
     s({ trig = "(%$?)a_{l} oc", show_condition = never, regTrig = true, wordTrig = false },
-        fmt_angle("<>\\lstinline{alloc}$(<>)", { f(smart_math), i(1) })),
+        fmt_angle(
+            "<>\\lstinline{alloc}$(<>)",
+            { f(smart_math), i(1) }
+        )
+    ),
+
     s({ trig = "(%$?)dispose", show_condition = never, regTrig = true, wordTrig = false },
-        fmt_angle("<>\\lstinline{dispose}$(<>)", { f(smart_math), i(1) })),
+        fmt_angle(
+            "<>\\lstinline{dispose}$(<>)",
+            { f(smart_math), i(1) }
+        )),
     s({ trig = "(%$?)if", show_condition = never, regTrig = true, wordTrig = false },
-        fmt_angle("<>\\lstinline{if} $<>$ \\lstinline{then} $<>$ \\lstinline{else} $<>",
-            { f(smart_math), i(1, "B"), i(2, "C_{1}"), i(3, "C_{2}") })),
-    s({ trig = "(%$?)\\nu \\ll", show_condition = never, regTrig = true, wordTrig = false },
-        fmt_angle("<>\\lstinline{null}<>", { f(smart_math), f(smart_math_after) })),
+        fmt_angle(
+            "<>\\lstinline{if} $<>$ \\lstinline{then} $<>$ \\lstinline{else} $<>",
+            {
+                f(smart_math),
+                i(1, "B"),
+                i(2, "C_{1}"),
+                i(3, "C_{2}")
+            }
+        )
+    ),
+    s({trig = "(%$?)\\nu \\ll", show_condition = never, regTrig = true, wordTrig = false},
+        fmt_angle(
+            "<>\\lstinline{null}<>",
+            {
+                f(smart_math),
+                f(smart_math_after)
+            }
+        )),
 
 
     s({

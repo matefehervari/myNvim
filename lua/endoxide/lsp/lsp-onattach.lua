@@ -44,19 +44,18 @@ end
 
 local function lsp_keymaps(bufnr)
     local rounded = { border = "rounded" }
-    local buf = { buffer = bufnr }
-    nnoremap("gD",         vim.lsp.buf.declaration,    buf)
-    nnoremap("gd",         def_callback,               buf)
-    nnoremap("K",          vim.lsp.buf.hover,          buf)
-    nnoremap("gi",         vim.lsp.buf.implementation, buf)
-    -- nnoremap("<C-k>",      vim.lsp.buf.signature_help, buf)
-    nnoremap("<leader>rn", vim.lsp.buf.rename,         buf)
-    nnoremap("gr",         ref_callback,               buf)
-    nnoremap("<leader>ca", ca_callback,                buf)
+    nnoremap("gD",         vim.lsp.buf.declaration,    {desc="LSP goto declaration", buffer = bufnr})
+    nnoremap("gd",         def_callback,               {desc="LSP goto defintion",   buffer = bufnr})
+    nnoremap("K",          vim.lsp.buf.hover,          {desc="LSP hover",            buffer = bufnr})
+    nnoremap("gi",         vim.lsp.buf.implementation, {desc="LSP goto definition",  buffer = bufnr})
+    nnoremap("<leader>rn", vim.lsp.buf.rename,         {desc="LSP rename",           buffer = bufnr})
+    nnoremap("gr",         ref_callback,               {desc="LSP goto references",  buffer = bufnr})
+    nnoremap("<leader>ca", ca_callback,                {desc="LSP code actions",     buffer = bufnr})
+    -- nnoremap("<C-k>",      vim.lsp.buf.signature_help)
 
-    nnoremap("[d", function() vim.diagnostic.goto_prev(rounded) end,  buf)
-    nnoremap("gl", function() vim.diagnostic.open_float(rounded) end, buf)
-    nnoremap("]d", function() vim.diagnostic.goto_next(rounded) end,  buf)
+    nnoremap("[d", function() vim.diagnostic.goto_prev(rounded) end,  {desc="Diagnostic goto prev",  buffer = bufnr})
+    nnoremap("gl", function() vim.diagnostic.open_float(rounded) end, {desc="Diagnostic open float", buffer = bufnr})
+    nnoremap("]d", function() vim.diagnostic.goto_next(rounded) end,  {desc="Diagnostic goto next",  buffer = bufnr})
 end
 
 M.on_attach = function(client, bufnr)

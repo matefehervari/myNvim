@@ -60,17 +60,14 @@ return {
 
     function _PYTHON_TOGGLE()
       python:toggle()
-      vim.api.nvim_buf_set_keymap(0, 't', '<S-Tab>', [[<cmd>lua _PYTHON_TOGGLE()<cr>]], {noremap = true})
     end
 
     function _GITUI_TOGGLE()
       gitui:toggle()
-      vim.api.nvim_buf_set_keymap(0, 't', '<S-Tab>', [[<C-\><C-n>:lua _GITUI_TOGGLE()<cr>]], {noremap = true})
     end
 
     function _SWIPL_TOGGLE()
       swipl:toggle()
-      vim.api.nvim_buf_set_keymap(0, 't', '<S-Tab>', [[<C-\><C-n>:lua _SWIPL_TOGGLE()<cr>]], {noremap = true})
     end
 
     local function set_terminal_keymaps()
@@ -93,15 +90,16 @@ return {
         callback =  set_terminal_keymaps
     })
 
-    nnoremap("<leader>tt", ":ToggleTerm direction=float dir=git_dir <CR>")
+    nnoremap("<leader>tt", ":ToggleTerm direction=float dir=git_dir <CR>", {desc="ToggleTerm working directory"})
     nnoremap("<leader>tb", function ()
       local buffer_dir = vim.fn.expand("%:p:h")
       local command = (":ToggleTerm direction=float dir=%s <CR>"):format(buffer_dir)
       vim.cmd(command)
-    end)
-    nnoremap("<leader>tv", ":ToggleTerm direction=vertical<CR>")
-    nnoremap("<leader>tp", _PYTHON_TOGGLE)
-    nnoremap("<leader>tg", _GITUI_TOGGLE)
-    nnoremap("<leader>ts", _SWIPL_TOGGLE)
+    end, {desc="ToggleTerm ToggleTerm buffer directory"})
+    nnoremap("<leader>tv", ":ToggleTerm direction=vertical<CR>", {desc="ToggleTerm vertical terminal"})
+    nnoremap("<leader>tp", _PYTHON_TOGGLE, {desc="ToggleTerm pthon shell"})
+    nnoremap("<leader>tg", _GITUI_TOGGLE,  {desc="ToggleTerm gitui"})
+    nnoremap("<leader>ts", _SWIPL_TOGGLE,  {desc="ToggleTerm swipl shell"})
+    nnoremap("<leader>tn", _NODE_TOGGLE,   {desc="ToggleTerm node shell"})
   end
 }

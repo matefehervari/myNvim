@@ -66,7 +66,7 @@ return {
           else
             gitsigns.nav_hunk('next')
           end
-        end)
+        end, {desc="GitSigns go to next hunk"})
 
         nnoremap('[c', function()
           if vim.wo.diff then
@@ -74,22 +74,21 @@ return {
           else
             gitsigns.nav_hunk('prev')
           end
-        end)
+        end, {desc="GitSigns go to previous hunk"})
 
         -- Actions
-        nnoremap('<leader>gs', gitsigns.stage_hunk)
-        nnoremap('<leader>gr', gitsigns.reset_hunk)
-        vnoremap('<leader>gs', function() gitsigns.stage_hunk { vim.fn.line('.'), vim.fn.line('v') } end)
-        vnoremap('<leader>gr', function() gitsigns.reset_hunk { vim.fn.line('.'), vim.fn.line('v') } end)
-        nnoremap('<leader>gS', gitsigns.stage_buffer)
-        nnoremap('<leader>gu', gitsigns.undo_stage_hunk)
-        nnoremap('<leader>gR', gitsigns.reset_buffer)
-        nnoremap('<leader>gp', gitsigns.preview_hunk)
-        nnoremap('<leader>gb', function() gitsigns.blame_line { full = true } end)
+        nnoremap('<leader>gs', gitsigns.stage_hunk, {desc="GitSigns stage hunk"})
+        nnoremap('<leader>gr', gitsigns.reset_hunk, {desc="GitSigns reset hunk"})
+        vnoremap('<leader>gs', function() gitsigns.stage_hunk { vim.fn.line('.'), vim.fn.line('v') } end, {desc="GitSigns stage hunk visual"})
+        vnoremap('<leader>gr', function() gitsigns.reset_hunk { vim.fn.line('.'), vim.fn.line('v') } end, {desc="GitSigns reset hunk visual"})
+        nnoremap('<leader>gS', gitsigns.stage_buffer, {desc="GitSigns stage buffer"})
+        nnoremap('<leader>gu', gitsigns.undo_stage_hunk, {desc="GitSigns undo stage hunk"})
+        nnoremap('<leader>gR', gitsigns.reset_buffer, {desc="GitSigns reset buffer"})
+        nnoremap('<leader>gp', gitsigns.preview_hunk, {desc="GitSigns preview hunk changes"})
+        nnoremap('<leader>gb', function() gitsigns.blame_line { full = true } end, {desc="GitSigns show full git blame"})
         -- nnoremap('<leader>tb', gitsigns.toggle_current_line_blame)
-        nnoremap('<leader>gd', gitsigns.diffthis)
-        nnoremap('<leader>gD', function() gitsigns.diffthis('~') end)
-        nnoremap('<leader>td', gitsigns.toggle_deleted)
+        nnoremap('<leader>gd', gitsigns.diffthis, {desc = "GitSigns diffthis"})
+        nnoremap('<leader>td', gitsigns.toggle_deleted, {desc= "GitSigns toggle deleted line"})
 
         -- Text object
         map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>')

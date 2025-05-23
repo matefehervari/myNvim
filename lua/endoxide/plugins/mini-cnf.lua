@@ -4,8 +4,10 @@ return {
     config = function()
         local minisurround = require("mini.surround")
         local minialign = require("mini.align")
+        local minisplitjoin = require("mini.splitjoin")
 
-        local config = {
+
+        minisurround.setup {
             mappings = {
                 add            = 'msa', -- Add surrounding in Normal and Visual modes
                 delete         = 'msd', -- Delete surrounding
@@ -16,7 +18,15 @@ return {
             },
         }
 
-        minisurround.setup(config)
         minialign.setup()
+
+        minisplitjoin.setup {
+            mappings = {
+                toggle = "<leader>m",
+                split = "<leader>s",
+                join = "<leader>j",
+            }
+        }
+
     end
 }

@@ -22,7 +22,7 @@ nnoremap("<S-l>", function()
     else
         vim.api.nvim_set_current_buf(buffers[index + 1])
     end
-end)
+end, {desc="Buffers move right"})
 
 nnoremap("<S-h>", function()
     local current = vim.fn.bufnr()
@@ -44,12 +44,12 @@ nnoremap("<S-h>", function()
     else
         vim.api.nvim_set_current_buf(buffers[index - 1])
     end
-end)
+end, {desc="Buffers move left"})
 
 nnoremap("<C-q>", function()
     -- vim.cmd("bdel")
     vim.api.nvim_buf_delete(0, { force = false, unload = false })
-end)
+end, {desc="Buffers delete"})
 
 nnoremap("<leader>h", function()
     local current = vim.fn.bufnr()
@@ -93,7 +93,7 @@ nnoremap("<leader>h", function()
     ::last::
     vim.g.endoxide = vim.tbl_extend('keep', { buffers = buffers, bufferspinned = bufferspinned }, vim.g.endoxide)
     require("lualine").refresh()
-end)
+end, {desc="Rearrange buffer leftwards"})
 
 nnoremap("<leader>l", function()
     local current = vim.fn.bufnr()
@@ -135,7 +135,7 @@ nnoremap("<leader>l", function()
     ::last::
     vim.g.endoxide = vim.tbl_extend('keep', { buffers = buffers, bufferspinned = bufferspinned }, vim.g.endoxide)
     require("lualine").refresh()
-end)
+end, {desc="Rearrange buffer rightwards"})
 
 nnoremap("<C-p>", function()
     local current = vim.fn.bufnr()
@@ -169,7 +169,7 @@ nnoremap("<C-p>", function()
     ::last::
     vim.g.endoxide = vim.tbl_extend('keep', { buffers = buffers, bufferspinned = bufferspinned }, vim.g.endoxide)
     require("lualine").refresh()
-end)
+end, {desc="Pin buffer"})
 
 nnoremap(
     "<leader>qa",
