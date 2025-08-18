@@ -24,6 +24,10 @@ nnoremap("<leader>w", function()
     vim.cmd("silent! write")
 end, {desc="Write buffer"})
 
+nnoremap("<leader>qq", function()
+    vim.cmd("silent! quit")
+end, {desc="Write buffer"})
+
 nnoremap("<leader>aw", function()
     vim.cmd("silent! wa")
 end, {desc="Write all buffers"})
@@ -135,7 +139,7 @@ end, {desc="Run in terminal"})
 -- execute and source
 nnoremap("<leader><leader>x", "<cmd>source %<CR>", {desc="Source file"})
 nnoremap("<leader>x", "<cmd>.lua<CR>", {desc="Run line in Lua"})
-vnoremap("<leader>x", "<cmd>lua<CR>", {desc="Run lines in Lua"})
+vnoremap("<leader>x", "<ESC><cmd>'<,'>lua<CR>gv", {desc="Run lines in Lua"})
 
 -- Custom user commmands
 -- duplicate with replace

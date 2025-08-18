@@ -293,8 +293,6 @@ return {
         }
 
 
-
-
         local inactive_sections = {
             lualine_a = {},
             lualine_b = {},
