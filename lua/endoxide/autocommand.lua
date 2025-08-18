@@ -131,6 +131,14 @@ local function setup()
         end
     })
 
+    autocmd({ "BufWritePre", }, {
+        desc = "Format file before write",
+        group = endoxideGroup,
+        callback = function()
+            vim.lsp.buf.format()
+        end
+    })
+
 end
 
 local M = {}
