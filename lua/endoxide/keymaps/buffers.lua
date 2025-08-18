@@ -2,6 +2,8 @@ local Remap = require("endoxide.keymap")
 
 local nnoremap = Remap.nnoremap
 
+local utils = require("endoxide.util.lua-utils")
+
 nnoremap("<S-l>", function()
     local current = vim.fn.bufnr()
     local buffers = vim.g.endoxide.bufferspinned
@@ -47,8 +49,25 @@ nnoremap("<S-h>", function()
 end, {desc="Buffers move left"})
 
 nnoremap("<C-q>", function()
-    -- vim.cmd("bdel")
-    vim.api.nvim_buf_delete(0, { force = false, unload = false })
+    local buffers = vim.g.endoxide.buffers
+    for _, buf in pairs(vim.g.endoxide.bufferspinned) do
+        table.insert(buffers, buf)
+    end
+
+    local windows = {}
+    for _, win in pairs(vim.api.nvim_list_wins()) do
+        local buf = vim.api.nvim_win_get_buf(win)
+        if utils.has_value(buffers, buf) then
+            table.insert(windows, win)
+        end
+    end
+
+
+    if #windows == 1 then
+        vim.api.nvim_buf_delete(0, { force = false, unload = false })
+    else
+        vim.api.nvim_win_close(0, false)
+    end
 end, {desc="Buffers delete"})
 
 nnoremap("<leader>h", function()
