@@ -5,9 +5,9 @@ vim.opt.relativenumber = true
 
 vim.opt.errorbells = false
 
-vim.opt.tabstop = 4                             -- how many characters is a tab character worth
-vim.opt.softtabstop = 4                         -- how many characters is pressing tab or backspace worth
-vim.opt.shiftwidth = 4                          -- characters to automatically indent by
+vim.opt.tabstop = 4     -- how many characters is a tab character worth
+vim.opt.softtabstop = 4 -- how many characters is pressing tab or backspace worth
+vim.opt.shiftwidth = 4  -- characters to automatically indent by
 vim.opt.expandtab = true
 vim.opt.smartindent = true
 
@@ -17,14 +17,14 @@ vim.opt.clipboard:append("unnamedplus")
 -- mostly just for cmp
 vim.opt.completeopt = { "menuone", "noselect" }
 
-vim.opt.conceallevel = 0                        -- so that `` is visible in markdown files
-vim.opt.fileencoding = "utf-8"                  -- the encoding written to a file
-vim.opt.pumheight = 10                          -- pop up menu height
-vim.opt.showtabline = 0                         -- always show tabs
-vim.opt.splitbelow = true                       -- force all horizontal splits to go below current window
-vim.opt.splitright = true                       -- force all vertical splits to go to the right of current window
-vim.opt.writebackup = false                     -- if a file is being edited by another program (or was written to file while editing with another program), it is not allowed to be edited
-vim.opt.guifont = "monospace:h17"               -- the font used in graphical neovim applications
+vim.opt.conceallevel = 0          -- so that `` is visible in markdown files
+vim.opt.fileencoding = "utf-8"    -- the encoding written to a file
+vim.opt.pumheight = 10            -- pop up menu height
+vim.opt.showtabline = 0           -- always show tabs
+vim.opt.splitbelow = true         -- force all horizontal splits to go below current window
+vim.opt.splitright = true         -- force all vertical splits to go to the right of current window
+vim.opt.writebackup = false       -- if a file is being edited by another program (or was written to file while editing with another program), it is not allowed to be edited
+vim.opt.guifont = "monospace:h17" -- the font used in graphical neovim applications
 
 vim.opt.wrap = false
 vim.opt.linebreak = false
@@ -71,4 +71,3 @@ vim.cmd "set ignorecase"
 vim.cmd "set smartcase"
 
 vim.cmd "set whichwrap+=<,>,[,],h,l"
-

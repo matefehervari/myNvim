@@ -27,6 +27,5 @@ return {
                 join = "<leader>j",
             }
         }
-
     end
 }

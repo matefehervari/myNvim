@@ -1,5 +1,6 @@
 return {
     "rcarriga/nvim-notify", -- Latex
+    enabled = true,
     config = function()
         local notify = require("notify")
         local config = {
@@ -21,7 +22,7 @@ return {
                 notification_history = "%FT%T"
             },
             timeout = 3000,
-            top_down = true
+            top_down = false
         }
 
         notify.setup(config)
