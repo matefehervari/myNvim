@@ -9,11 +9,12 @@ return {
         local insert_all = require("endoxide.util.lua-utils").insert_all
 
         local lang_servers = require("endoxide.data.lang_lsps")
+        local setup_server = require("endoxide.lsp.setup_server")
 
         local config = {
             ensure_installed = {
                 -- Scripting
-                "bashls",    -- Bash
+                "bashls", -- Bash
                 -- "checkmake", -- Makefile
 
                 -- Webdev
@@ -22,18 +23,21 @@ return {
                 "emmet_language_server", -- Emmet
 
                 -- Data
-                "jsonls",  -- Json
+                "jsonls", -- Json
 
                 -- Format
-                "ruff",  -- Python
-            }
+                "ruff", -- Python
+            },
+            automatic_enable = false,
         }
 
         insert_all(config.ensure_installed, lang_servers)
 
         mason_lsp.setup(config)
-        mason_lsp.setup_handlers({
-            require("endoxide.lsp.handlers")
-        })
+
+        local servers = mason_lsp.get_installed_servers()
+        for _, server_name in ipairs(servers) do
+            setup_server(server_name)
+        end
     end
 }

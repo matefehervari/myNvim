@@ -1,6 +1,6 @@
 return {
     "williamboman/mason.nvim",
-    config = function ()
+    config = function()
         local mason = require("mason")
         local nnoremap = require("endoxide.keymap").nnoremap
         local config = {
@@ -10,6 +10,8 @@ return {
         }
         mason.setup(config)
 
-        nnoremap("<leader>fm", "<Cmd>Mason<CR>", {desc = "Open Mason"})
+        nnoremap("<leader>fm", function()
+            vim.cmd("Mason")
+        end, { desc = "Open Mason" })
     end
 }
