@@ -80,7 +80,7 @@ return {
         local cmp_autopairs = require "nvim-autopairs.completion.cmp"
         local cmp_status_ok, cmp = pcall(require, "cmp")
         if not cmp_status_ok then
-            vim.notify("Failed to load cmp", 4, {title="'nvim-autopairs' configuration"})
+            vim.notify("Failed to load cmp", 4, { title = "'nvim-autopairs' configuration" })
             return
         end
         -- add brackets after cmp.lsp event (function and method completion)
@@ -94,7 +94,8 @@ return {
                                 cmp.lsp.CompletionItemKind.Method,
                             }
                         }
-                    }
+                    },
+                    rust = {},
                 }
             })
         )
