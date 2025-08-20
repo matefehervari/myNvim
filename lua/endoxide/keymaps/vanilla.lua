@@ -6,7 +6,6 @@ local inoremap = Remap.inoremap
 local xnoremap = Remap.xnoremap
 local cnoremap = Remap.cnoremap
 local tnoremap = Remap.tnoremap
-local snoremap = Remap.snoremap
 
 nnoremap("<space>", "<Nop>")
 
@@ -27,10 +26,6 @@ end, { desc = "Write buffer" })
 nnoremap("<leader>qq", function()
     vim.cmd("silent! quit")
 end, { desc = "Write buffer" })
-
-nnoremap("<leader>aw", function()
-    vim.cmd("silent! wa")
-end, { desc = "Write all buffers" })
 
 -- silent undos/redos
 nnoremap("u", function()
@@ -70,13 +65,13 @@ inoremap("<ESC>", function()
     end
 end, { desc = "Stop insert mode (unlink snippet jumps)" })
 vnoremap("<ESC>", "<C-c>", { desc = "Stop visual mode" })
-snoremap("<ESC>", function()
-    vim.cmd("stopinsert")
-    local luasnip = require("luasnip")
-    if luasnip.jumpable() then
-        luasnip.unlink_current()
-    end
-end, { desc = "Stop replace mode (unlink snippet jumps)" })
+-- snoremap("<ESC>", function()
+--     vim.cmd("stopinsert")
+--     local luasnip = require("luasnip")
+--     if luasnip.jumpable() then
+--         luasnip.unlink_current()
+--     end
+-- end, { desc = "Stop replace mode (unlink snippet jumps)" })
 tnoremap("<ESC>", [[<C-\><C-n>]], { desc = "Stop terminal mode" })
 cnoremap("<ESC>", "<C-c>", { desc = "Stop command mode" })
 nnoremap("<ESC>", function()
@@ -126,8 +121,8 @@ vnoremap([[<leader>']], [[s''<Esc><Left>p]], { desc = "Surround ''" })
 vnoremap([[<leader>`]], [[s``<Esc><Left>p]], { desc = "Surround ``" })
 
 -- remove superfluous space
-nnoremap("gds", [[:s/\S\zs\s\{2,}/ /g<CR>]], { desc = "Remove superfluous spaces" })
-vnoremap("gds", [[:s/\S\zs\s\{2,}/ /g<CR>gv]], { desc = "Remove superfluous spaces" })
+nnoremap("<leader>ds", [[:s/\S\zs\s\{2,}/ /g<CR>]], { desc = "Remove superfluous spaces" })
+vnoremap("<leader>ds", [[:s/\S\zs\s\{2,}/ /g<CR>gv]], { desc = "Remove superfluous spaces" })
 
 -- run program
 nnoremap("<leader>rt", function()
@@ -152,5 +147,5 @@ vnoremap("<leader>x", "<ESC><cmd>'<,'>lua<CR>gv", { desc = "Run lines in Lua" })
 
 -- Custom user commmands
 -- duplicate with replace
-nnoremap("gdr", "<cmd>DuplicateWithReplace<CR>", { desc = "DuplicateWithReplace" })
-vnoremap("gdr", "<cmd>DuplicateWithReplace<CR>", { desc = "DuplicateWithReplace lines" })
+nnoremap("<leader>dr", "<cmd>DuplicateWithReplace<CR>", { desc = "DuplicateWithReplace" })
+vnoremap("<leader>dr", "<cmd>DuplicateWithReplace<CR>", { desc = "DuplicateWithReplace lines" })

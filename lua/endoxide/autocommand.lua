@@ -48,16 +48,16 @@ local function setup()
         end,
     })
 
-    autocmd("LspAttach", {
-        group = endoxideGroup,
-        callback = function()
-            nnoremap("<leader>ti", function()
-                local enabled = not vim.lsp.inlay_hint.is_enabled({})
-                vim.lsp.inlay_hint.enable(enabled)
-                vim.notify("Inlay hints: " .. (enabled and " on" or "off"), nil, { title = "Inlay Hints Toggled" })
-            end, { buffer = 0, desc = "Toggle inlay hints" })
-        end
-    })
+    -- autocmd("LspAttach", {
+    --     group = endoxideGroup,
+    --     callback = function()
+    --         nnoremap("<leader>ti", function()
+    --             local enabled = not vim.lsp.inlay_hint.is_enabled({})
+    --             vim.lsp.inlay_hint.enable(enabled)
+    --             vim.notify("Inlay hints: " .. (enabled and " on" or "off"), nil, { title = "Inlay Hints Toggled" })
+    --         end, { buffer = 0, desc = "Toggle inlay hints" })
+    --     end
+    -- })
 
     -- Buffer info
     autocmd({ "BufRead", "BufEnter", "BufDelete", "SessionLoadPost" }, {
@@ -138,7 +138,6 @@ local function setup()
             vim.lsp.buf.format()
         end
     })
-
 end
 
 local M = {}
