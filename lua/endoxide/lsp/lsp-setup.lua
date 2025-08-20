@@ -1,4 +1,3 @@
-
 local M = {}
 
 M.setup = function()
@@ -15,7 +14,13 @@ M.setup = function()
 
     local config = {
         -- disable virtual text
-        virtual_text = true,
+        virtual_text = false,
+        virtual_lines = {
+            severity = {
+                vim.diagnostic.severity.ERROR,
+                vim.diagnostic.severity.WARN,
+            }
+        },
         -- show signs
         signs = {
             active = signs,
@@ -35,13 +40,11 @@ M.setup = function()
 
     vim.diagnostic.config(config)
 
-    vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
-        border = "rounded",
-    })
-
-    vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
-        border = "rounded",
-    })
+    vim.keymap.del("n", "grt")
+    vim.keymap.del("n", "gri")
+    vim.keymap.del("n", "gra")
+    vim.keymap.del("n", "grn")
+    vim.keymap.del({ "n" }, "grr")
 end
 
 return M

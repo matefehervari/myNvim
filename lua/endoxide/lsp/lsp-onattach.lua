@@ -1,4 +1,7 @@
-local nnoremap = require("endoxide.keymap").nnoremap
+local keymap = require("endoxide.keymap")
+local nnoremap = keymap.nnoremap
+local vnoremap = keymap.vnoremap
+
 local autocommand = require("endoxide.autocommand")
 local augroup = autocommand.augroup
 local autocmd = autocommand.autocmd
@@ -12,6 +15,10 @@ end
 local ca_callback = tca_ok and tca.code_action or vim.lsp.buf.code_action
 local def_callback = tb_ok and tb.lsp_definitions or vim.lsp.buf.definition
 local ref_callback = tb_ok and tb.lsp_references or vim.lsp.buf.references
+
+local sev = vim.diagnostic.severity
+local ERROR, INFO, HINT = sev.ERROR, sev.INFO, sev.HINT
+local rounded = { border = "rounded" }
 
 local M = {}
 
@@ -42,20 +49,42 @@ local function lsp_highlight_document(client)
     end
 end
 
-local function lsp_keymaps(bufnr)
-    local rounded = { border = "rounded" }
-    nnoremap("gD",         vim.lsp.buf.declaration,    {desc="LSP goto declaration", buffer = bufnr})
-    nnoremap("gd",         def_callback,               {desc="LSP goto defintion",   buffer = bufnr})
-    nnoremap("K",          vim.lsp.buf.hover,          {desc="LSP hover",            buffer = bufnr})
-    nnoremap("gi",         vim.lsp.buf.implementation, {desc="LSP goto definition",  buffer = bufnr})
-    nnoremap("<leader>rn", vim.lsp.buf.rename,         {desc="LSP rename",           buffer = bufnr})
-    nnoremap("gr",         ref_callback,               {desc="LSP goto references",  buffer = bufnr})
-    nnoremap("<leader>ca", ca_callback,                {desc="LSP code actions",     buffer = bufnr})
-    -- nnoremap("<C-k>",      vim.lsp.buf.signature_help)
+---@param mode '"forward"'|'"reverse"'
+local function jump_to_diagnostic(mode)
+    for severity = ERROR, HINT do
+        local diagnostic
+        if mode == "forward" then
+            diagnostic = vim.diagnostic.get_next({ severity = severity })
+        elseif mode == "reverse" then
+            diagnostic = vim.diagnostic.get_prev({ severity = severity })
+        end
+        if diagnostic then
+            vim.diagnostic.jump({ diagnostic = diagnostic, float = { border = "rounded", severity = { INFO, HINT } } })
+            break
+        end
+    end
+end
 
-    nnoremap("[d", function() vim.diagnostic.goto_prev(rounded) end,  {desc="Diagnostic goto prev",  buffer = bufnr})
-    nnoremap("gl", function() vim.diagnostic.open_float(rounded) end, {desc="Diagnostic open float", buffer = bufnr})
-    nnoremap("]d", function() vim.diagnostic.goto_next(rounded) end,  {desc="Diagnostic goto next",  buffer = bufnr})
+local function lsp_keymaps(bufnr)
+    nnoremap("gd", def_callback, { desc = "LSP goto defintion", buffer = bufnr })
+    nnoremap("gD", vim.lsp.buf.declaration, { desc = "LSP goto declaration", buffer = bufnr })
+    nnoremap("gi", vim.lsp.buf.implementation, { desc = "LSP goto implementation", buffer = bufnr })
+    nnoremap("gr", ref_callback, { desc = "LSP goto references", buffer = bufnr })
+    nnoremap("gt", ca_callback, { desc = "LSP goto type definition", buffer = bufnr })
+    nnoremap("K", vim.lsp.buf.hover, { desc = "LSP hover", buffer = bufnr })
+    nnoremap("<leader>rn", vim.lsp.buf.rename, { desc = "LSP rename", buffer = bufnr })
+    nnoremap("<leader>a", ca_callback, { desc = "LSP code actions", buffer = bufnr })
+    nnoremap("<leader>ti", function()
+        local enabled = not vim.lsp.inlay_hint.is_enabled({})
+        vim.lsp.inlay_hint.enable(enabled)
+        vim.notify("Inlay hints: " .. (enabled and " on" or "off"), nil, { title = "Inlay Hints Toggled" })
+    end, { desc = "Toggle inlay hints", buffer = bufnr })
+
+    nnoremap("[d", function() jump_to_diagnostic("reverse") end,
+        { desc = "Diagnostic goto prev", buffer = bufnr })
+    nnoremap("]d", function() jump_to_diagnostic("forward") end,
+        { desc = "Diagnostic goto next", buffer = bufnr })
+    nnoremap("gl", function() vim.diagnostic.open_float(rounded) end, { desc = "Diagnostic open float", buffer = bufnr })
 end
 
 M.on_attach = function(client, bufnr)
@@ -70,10 +99,12 @@ M.on_attach = function(client, bufnr)
         end
         client.resolved_capabilities.document_formatting = true
         client.resolved_capabilities.textDocument.completion.completionItem.snippetSupport = false
-    elseif client.name == "rust_analyzer" then
-        local rt = require("rust-tools")
-        nnoremap("K", rt.hover_actions.hover_actions, { buffer = bufnr })
-        nnoremap("<leader>ca", rt.code_action_group.code_action_group, { buffer = bufnr })
+    elseif client.name == "rust-analyzer" then
+        nnoremap("K", function() vim.cmd.RustLsp({ "hover", "actions" }) end, { desc = "RustLsp Hover", buffer = bufnr })
+        nnoremap("<leader>a", function() vim.cmd.RustLsp("codeAction") end,
+            { desc = "RustLsp code actions", buffer = bufnr })
+        vnoremap("<leader>a", function() vim.cmd.RustLsp("codeAction") end,
+            { desc = "RustLsp code actions", buffer = bufnr })
     end
 end
 
