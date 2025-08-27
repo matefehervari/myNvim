@@ -6,6 +6,7 @@ local inoremap = Remap.inoremap
 local xnoremap = Remap.xnoremap
 local cnoremap = Remap.cnoremap
 local tnoremap = Remap.tnoremap
+local snoremap = Remap.snoremap
 
 nnoremap("<space>", "<Nop>")
 
@@ -24,8 +25,8 @@ nnoremap("<leader>w", function()
 end, { desc = "Write buffer" })
 
 nnoremap("<leader>qq", function()
-    vim.cmd("silent! quit")
-end, { desc = "Write buffer" })
+    vim.cmd("silent quit")
+end, { desc = "Quit" })
 
 -- silent undos/redos
 nnoremap("u", function()
@@ -60,11 +61,13 @@ inoremap("<C-l>", "<Right>", { desc = "Move right in insert" })
 inoremap("<ESC>", function()
     vim.cmd("stopinsert")
     local luasnip = require("luasnip")
-    if luasnip.jumpable() then
+    if luasnip.jumpable(1) then
         luasnip.unlink_current()
     end
 end, { desc = "Stop insert mode (unlink snippet jumps)" })
+
 vnoremap("<ESC>", "<C-c>", { desc = "Stop visual mode" })
+snoremap("<ESC>", "<C-c>", { desc = "Stop select mode" })
 -- snoremap("<ESC>", function()
 --     vim.cmd("stopinsert")
 --     local luasnip = require("luasnip")

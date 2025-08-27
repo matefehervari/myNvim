@@ -1,16 +1,32 @@
+local M = {}
+
 local output = {
-    lua = "print(%s)",
-    python = "print(%s)",
-    typescript = "console.log(%s)",
-    typescriptreact = "console.log(%s)",
-    c = "printf(%s);",
-    cpp = "std::cout << %s std::endl;",
-    cs = "Console.WriteLine(%s);",
-    java = "System.out.println(%s);",
+    lua = [[print(%s)]],
+    python = [[print(%s)]],
+    typescript = [[console.log(%s)]],
+    typescriptreact = [[console.log(%s)]],
+    c = [[printf(%s);]],
+    cpp = [[std::cout << %s std::endl;]],
+    cs = [[Console.WriteLine(%s);]],
+    java = [[System.out.println(%s);]],
+    rust = [[println!("{}", %s)]],
+}
+
+local dbg = {
+    lua = [[print("%s: " .. vim.inspect(%s))]],
+    python = [[print(f"%s: {%s}")]],
+    typescript = [[console.log(`"%s: ${%s}`)]],
+    typescriptreact = [[console.log(`"%s: ${%s}`)]],
+    c = [[printf("%s: %%s", %s);]],
+    cpp = [[std::cout << "%s: " << %s << std::endl;]],
+    cs = [[Console.WriteLine($"%s {%s}");]],
+    java = [[System.out.println("%s: " + %s);]],
+    rust = [[println!("%s: {}", %s)]],
 }
 
 local mt = {
-    __call = function (self, idx)
+    -- return parts formed by splitting by format placeholder
+    __call = function(self, idx)
         local DELIM = "X"
         local fmt_string = self[idx]
 
@@ -19,10 +35,13 @@ local mt = {
         local split_string = fmt_string:gsub("%%s", DELIM)
         local left, right = split_string:match("(.+)" .. DELIM .. "(.+)")
 
-        return {left, right}
+        return { left, right }
     end
 }
 
 setmetatable(output, mt)
 
-return output
+M.output = output
+M.debug = dbg
+
+return M

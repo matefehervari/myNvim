@@ -14,6 +14,13 @@ return {
             },
             hint = {
                 enable = true
+            },
+            format = {
+                enable = true,
+                defaultConfig = {
+                    indent_type = "Spaces",
+                    indent_width = vim.o.tabstop,
+                }
             }
         },
     },

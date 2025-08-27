@@ -1,17 +1,11 @@
 local ls = require("luasnip")
-local tsutil = require("endoxide.util.tsutils")
 
 local s = ls.snippet
-local t = ls.text_node
 local i = ls.insert_node
-local d = ls.dynamic_node
 local f = ls.function_node
-local sn = ls.snippet_node
-local postfix = require("luasnip.extras.postfix").postfix
-local fmt = require("luasnip.extras.fmt").fmt
-local fmt_angle = ls.extend_decorator.apply(fmt, { delimiters = "<>" })
 
-local std_out = require("endoxide.data.std_out_map")
+local std_out = require("endoxide.data.std_out_map").output
+local dbg_out = require("endoxide.data.std_out_map").debug
 
 local match_ft = function()
     local buf_ft = vim.api.nvim_get_option_value("filetype", {})
@@ -35,6 +29,26 @@ return {
             local out_fmt = std_out[buf_ft]
 
             return out_fmt:format(parent.snippet.captures[1])
+        end) }),
+    s({
+            trig = "(%S+)%;;(%S*)",
+            priority = 1001,
+            regTrig = true,
+            wordTrig = false,
+            condition = match_ft,
+            show_condition = never,
+        },
+        { f(function(_, parent)
+            local capture = parent.snippet.captures[1]
+            local message = parent.snippet.captures[2]
+            local buf_ft = vim.api.nvim_get_option_value("filetype", {})
+            local dbg_fmt = dbg_out[buf_ft]
+            local dbg_message = capture
+            if message then
+                dbg_message = dbg_message .. " " .. message
+            end
+
+            return dbg_fmt:format(dbg_message, capture)
         end) }),
 
     s({

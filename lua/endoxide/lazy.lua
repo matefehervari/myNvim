@@ -14,9 +14,9 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 local plugins = {
-    "nvim-lua/popup.nvim", -- An implementation of the Popup API from vim in Neovim
     { import = "endoxide.plugins" },
     { import = "endoxide.plugins.lsp" },
+    { import = "endoxide.plugins.files" },
 
     -- snippets
     "rafamadriz/friendly-snippets", -- a bunch of snippets to use

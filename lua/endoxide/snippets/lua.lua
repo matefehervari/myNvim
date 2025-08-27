@@ -14,8 +14,8 @@ local fmt_angle = ls.extend_decorator.apply(fmt, { delimiters = "<>" })
 local snippets = {
     s({ trig = "autocmd" },
         fmt_angle(
-        "autocmd({ \"<>\",<> }, {\n\tgroup = <>,\n\tpattern = \"<>\",\n\tcallback = function()\n\t\t<>\n\tend\n})",
-            { i(1, "Trigger"), i(2), i(3, "nil"), i(4, "*.ext"), i(5) })),
+            "autocmd({ \"<>\",<> }, {\n\tdesc = \"<>\",\n\tgroup = <>,\n\tpattern = \"<>\",\n\tcallback = function()\n\t\t<>\n\tend\n})",
+            { i(1, "Trigger"), i(2), i(3, "Description"), i(4, "nil"), i(5, "*.ext"), i(6) })),
 }
 
 return snippets

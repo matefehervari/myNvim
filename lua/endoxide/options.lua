@@ -23,7 +23,8 @@ vim.opt.pumheight = 10            -- pop up menu height
 vim.opt.showtabline = 0           -- always show tabs
 vim.opt.splitbelow = true         -- force all horizontal splits to go below current window
 vim.opt.splitright = true         -- force all vertical splits to go to the right of current window
-vim.opt.writebackup = false       -- if a file is being edited by another program (or was written to file while editing with another program), it is not allowed to be edited
+vim.opt.writebackup = false       -- if a file is being edited by another program
+-- (or was written to file while editing with another program), it is not allowed to be edited
 vim.opt.guifont = "monospace:h17" -- the font used in graphical neovim applications
 
 vim.opt.wrap = false
@@ -49,8 +50,7 @@ vim.o.laststatus = 3
 vim.opt_global.laststatus = 3
 vim.opt.laststatus = 3
 
--- Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
--- delays and poor user experience.
+-- Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable delays and poor user experience.
 vim.opt.updatetime = 50
 
 -- Don't pass messages to |ins-completion-menu|.
@@ -61,13 +61,19 @@ vim.opt.mousemoveevent = true
 -- vim.g.matchparen_insert_timeout = 2
 -- vim.opt.loaded_matchparen = 1
 
-vim.g.colorcolumn = "80"
+vim.opt.textwidth = 80
+vim.opt.colorcolumn = "81"
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 -- case sensitivity
-vim.cmd "set ignorecase"
-vim.cmd "set smartcase"
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
 
-vim.cmd "set whichwrap+=<,>,[,],h,l"
+local whichwrap_chars = { "<", ">", "[", "]", "h", "l" }
+local whichwrap = {}
+for _, c in ipairs(whichwrap_chars) do
+    whichwrap[c] = true
+end
+vim.opt.whichwrap:append(whichwrap)

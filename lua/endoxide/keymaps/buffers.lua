@@ -24,7 +24,7 @@ nnoremap("<S-l>", function()
     else
         vim.api.nvim_set_current_buf(buffers[index + 1])
     end
-end, {desc="Buffers move right"})
+end, { desc = "Buffers move right" })
 
 nnoremap("<S-h>", function()
     local current = vim.fn.bufnr()
@@ -46,29 +46,41 @@ nnoremap("<S-h>", function()
     else
         vim.api.nvim_set_current_buf(buffers[index - 1])
     end
-end, {desc="Buffers move left"})
+end, { desc = "Buffers move left" })
 
 nnoremap("<C-q>", function()
     local buffers = vim.g.endoxide.buffers
-    for _, buf in pairs(vim.g.endoxide.bufferspinned) do
-        table.insert(buffers, buf)
-    end
+    local bufferspinned = vim.g.endoxide.bufferspinned
+    local all_buffers = vim.list_extend(buffers, bufferspinned)
 
-    local windows = {}
-    for _, win in pairs(vim.api.nvim_list_wins()) do
-        local buf = vim.api.nvim_win_get_buf(win)
-        if utils.has_value(buffers, buf) then
-            table.insert(windows, win)
+    -- filter windows with open buffers
+    local windows = vim.tbl_filter(
+        function(win)
+            local win_buf = vim.api.nvim_win_get_buf(win)
+            return vim.list_contains(all_buffers, win_buf)
+        end,
+        vim.api.nvim_list_wins()
+    )
+
+    if #windows == 1 then -- delete buffer
+        local buf = vim.api.nvim_get_current_buf()
+        local p_idx = utils.find(bufferspinned)
+        local b_idx = utils.find(buffers)
+        local idx = p_idx or b_idx
+        local remove_target = (p_idx == nil and buffers) or (b_idx == nil and bufferspinned) or nil
+        assert(remove_target ~= nil, "Error: Current buffer not in tracked buffers")
+
+        if #remove_target == idx and idx > 1 then
+            vim.cmd("b " .. (all_buffers[idx - 1]))
+            table.remove(remove_target, idx)
+            vim.g.endoxide = vim.tbl_extend('keep', { buffers = buffers, bufferspinned = bufferspinned }, vim.g.endoxide)
         end
-    end
 
-
-    if #windows == 1 then
-        vim.api.nvim_buf_delete(0, { force = false, unload = false })
-    else
+        vim.api.nvim_buf_delete(buf, { force = false, unload = false })
+    else -- close window instead
         vim.api.nvim_win_close(0, false)
     end
-end, {desc="Buffers delete"})
+end, { desc = "Buffers delete" })
 
 nnoremap("<leader>h", function()
     local current = vim.fn.bufnr()
@@ -112,7 +124,7 @@ nnoremap("<leader>h", function()
     ::last::
     vim.g.endoxide = vim.tbl_extend('keep', { buffers = buffers, bufferspinned = bufferspinned }, vim.g.endoxide)
     require("lualine").refresh()
-end, {desc="Rearrange buffer leftwards"})
+end, { desc = "Rearrange buffer leftwards" })
 
 nnoremap("<leader>l", function()
     local current = vim.fn.bufnr()
@@ -154,46 +166,32 @@ nnoremap("<leader>l", function()
     ::last::
     vim.g.endoxide = vim.tbl_extend('keep', { buffers = buffers, bufferspinned = bufferspinned }, vim.g.endoxide)
     require("lualine").refresh()
-end, {desc="Rearrange buffer rightwards"})
+end, { desc = "Rearrange buffer rightwards" })
 
 nnoremap("<C-p>", function()
-    local current = vim.fn.bufnr()
+    local current = vim.api.nvim_get_current_buf()
     local buffers = vim.g.endoxide.buffers
     local bufferspinned = vim.g.endoxide.bufferspinned
 
-    local index
-    for i, value in ipairs(buffers) do
-        if value == current then
-            index = i
-            break
-        end
-    end
+    local idx = utils.find(buffers, current)
 
-    if index ~= nil then
+    if idx ~= nil then
         table.insert(bufferspinned, current)
-        table.remove(buffers, index)
-        goto last
+        table.remove(buffers, idx)
+    else
+        idx = utils.find(bufferspinned, current)
+        table.insert(buffers, 1, current)
+        table.remove(bufferspinned, idx)
     end
 
-    for i, value in ipairs(bufferspinned) do
-        if value == current then
-            index = i
-            break
-        end
-    end
-
-    table.remove(bufferspinned, index)
-    table.insert(buffers, 1, current)
-
-    ::last::
     vim.g.endoxide = vim.tbl_extend('keep', { buffers = buffers, bufferspinned = bufferspinned }, vim.g.endoxide)
     require("lualine").refresh()
-end, {desc="Pin buffer"})
+end, { desc = "Pin buffer" })
 
 nnoremap(
     "<leader>qa",
     function()
-        local current = vim.fn.bufnr()
+        local current = vim.api.nvim_get_current_buf()
         local buffers = vim.g.endoxide.buffers
 
         for _, bufnr in ipairs(buffers) do

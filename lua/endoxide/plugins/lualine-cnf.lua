@@ -1,3 +1,7 @@
+--- @class endoxide.buffer.ReprBufferOpts
+--- @field bufnr integer The buffer number to represent
+--- @field pinned? boolean Whether the buffer is pinned
+
 return {
     "nvim-lualine/lualine.nvim", -- lualine
     requires = { "folke/tokyonight.nvim", "catppuccin/nvim", "kyazdani42/nvim-web-devicons" },
@@ -11,14 +15,15 @@ return {
         local colors = require("endoxide.colors").colors
         local highlights = require("endoxide.util.highlights")
         local hl_text = highlights.hl_text
-        local autocmd = vim.api.nvim_create_autocmd
+        local autocommand = require("endoxide.autocommand")
+        local autocmd = autocommand.autocmd
+        local endoxideGroup = autocommand.endoxideGroup
         local utils = require("endoxide.util.lua-utils")
 
         local icons = require("endoxide.icons")
         local diag_icons = icons.diagnostics
         local ui = icons.ui
 
-        local lang_servers = require("endoxide.data.lang_lsps")
 
         local buffer_limit = 5
 
@@ -52,13 +57,15 @@ return {
             icons.diagnostics.Hint,
         }
 
-        local function repr_buffer(opts)
-            local current = vim.fn.bufnr()
-            local buf = vim.fn.getbufinfo(opts.bufnr)[1]
 
-            local filename = vim.fs.basename(buf.name)
-            local ext = filename:match("%.(%a+)$")
-            local file = filename:gsub("%.(%a+)$", "")
+        --- @param opts endoxide.buffer.ReprBufferOpts
+        local function repr_buffer(opts)
+            local current = vim.api.nvim_get_current_buf() -- current buffer
+            local buf = vim.fn.getbufinfo(opts.bufnr)[1]   -- bufinfo of buf to repr
+
+            local filename = vim.fs.basename(buf.name)     -- full filename
+            local ext = filename:match("%.(%a+)$")         -- extension
+            local file = filename:gsub("%.(%a+)$", "")     -- file w/o extension
 
             if filename == "" then
                 file = " ~ "
@@ -126,28 +133,28 @@ return {
             return ("%s %s%s %s"):format(pinned_repr, modified, icon_repr, buf_repr)
         end
 
+        local function summary(num)
+            return (" +%d "):format(num)
+        end
 
         local buffers3 = {
             function()
-                local current = vim.fn.bufnr()
+                local current = vim.api.nvim_get_current_buf()
                 local pinned = vim.g.endoxide.bufferspinned
 
                 local curr_pinned = utils.find(pinned, current) ~= nil
 
-                local buffers = {}
+                local buffers = vim.g.endoxide.buffers
                 local buffers_left = {}
                 local buffers_right = {}
-                local left = true
-                for _, bufnr in ipairs(vim.g.endoxide.buffers) do
-                    if bufnr == current then
-                        left = false
-                    elseif left then
-                        table.insert(buffers_left, bufnr)
-                    else
-                        table.insert(buffers_right, bufnr)
-                    end
+                local append_to = buffers_left
 
-                    table.insert(buffers, bufnr)
+                for _, bufnr in ipairs(buffers) do
+                    if bufnr == current then
+                        append_to = buffers_right
+                    else
+                        table.insert(append_to, bufnr)
+                    end
                 end
 
                 local repr = ""
@@ -155,47 +162,56 @@ return {
                     repr = repr .. repr_buffer { bufnr = bufnr, pinned = true }
                 end
 
-                local display_left = buffer_limit - (not curr_pinned and 1 or 0) -
-                    (#buffers_right > 0 and not curr_pinned and 1 or 0)
-                display_left = math.min(display_left, #buffers_left)
+                -- include current in limit if not pinned
+                local remaining_limit = curr_pinned and buffer_limit or buffer_limit - 1
 
-                local display_right = buffer_limit - (not curr_pinned and 1 or 0) - display_left
-                display_right = math.min(display_right, #buffers_right)
+                -- limit buffers on left to a maximum which allows display of
+                -- one right buffer if it exists
+                local left_limit = remaining_limit - (#buffers_right > 0 and not curr_pinned and 1 or 0)
+                local display_left = math.min(left_limit, #buffers_left)
 
+                -- limit buffers on right to a maximum ofto remaining available buffers from limit
+                local right_limit = remaining_limit - display_left
+                local display_right = math.min(right_limit, #buffers_right)
 
+                -- display remaining left_limit buffers as:
+                --     case 0: ""
+                --     case <=left_limit: ( buf1 buf2 )
+                --     case >left_limit: ( buf1 buf2 .. +x .. bufn)
+                -- all buffers will be in buffers_left if current is pinned
                 if curr_pinned then
-                    for i = 1, display_left - 1 do
-                        local bufnr = buffers_left[i]
-                        repr = repr .. repr_buffer { bufnr = bufnr }
+                    if #buffers_left == 0 then
+                        return repr
                     end
-                end
-
-                if #buffers_left > display_left then
-                    repr = repr .. (" +%d "):format(#buffers_left - display_left)
-                end
-
-                if curr_pinned then
-                    repr = repr .. repr_buffer { bufnr = buffers_left[#buffers_left] }
-                end
-
-                if not curr_pinned then
+                    local show_summary = (left_limit < #buffers_left)
+                    local display_first = show_summary and (display_left - 1) or display_left
+                    for i = 1, display_first do
+                        repr = repr .. repr_buffer({ bufnr = buffers_left[i] })
+                    end
+                    if show_summary then
+                        repr = repr
+                            .. summary(#buffers_left - left_limit)
+                            .. repr_buffer({ bufnr = buffers_left[#buffers_left] })
+                    end
+                else
+                    -- left summary
+                    if #buffers_left > left_limit then
+                        repr = repr .. summary(#buffers_left - left_limit)
+                    end
+                    -- display left
                     for i = #buffers_left - display_left + 1, #buffers_left do
-                        local bufnr = buffers_left[i]
-                        repr = repr .. repr_buffer { bufnr = bufnr }
+                        repr = repr .. repr_buffer { bufnr = buffers_left[i] }
                     end
-                end
-
-                if not curr_pinned then
+                    -- display current
                     repr = repr .. repr_buffer { bufnr = current }
-                end
-
-                for i = 1, display_right do
-                    local bufnr = buffers_right[i]
-                    repr = repr .. repr_buffer { bufnr = bufnr }
-                end
-
-                if #buffers_right > display_right then
-                    repr = repr .. (" +%d "):format(#buffers_right - display_right)
+                    -- display right
+                    for i = 1, display_right do
+                        repr = repr .. repr_buffer { bufnr = buffers_right[i] }
+                    end
+                    -- right summary
+                    if #buffers_right > right_limit then
+                        repr = repr .. summary(#buffers_right - right_limit)
+                    end
                 end
 
                 return repr
@@ -214,28 +230,15 @@ return {
 
         local get_active_lsp = function()
             local msg = hl_text("EndoxideLspDisconnected", "󱐋 No Lsp")
-            local buf_ft = vim.api.nvim_get_option_value("filetype", {})
             local clients = vim.lsp.get_clients { bufnr = 0 }
-            if next(clients) == nil then
+
+            if vim.tbl_isempty(clients) then
                 return msg
             end
 
-            local client_name = nil
-            for _, client in ipairs(clients) do
-                local filetypes = client.config.filetypes
-
-                if filetypes and
-                    vim.fn.index(filetypes, buf_ft) ~= -1 and
-                    (
-                        not client_name or (vim.fn.index(lang_servers, client_name) == -1 and
-                            vim.fn.index(lang_servers, client.name) ~= -1)
-                    ) then
-                    client_name = client.name
-                end
-            end
-
-            if client_name then
-                return hl_text("EndoxideLspConnected", "󱘖 " .. client_name)
+            local client = clients[1]
+            if client.name then
+                return hl_text("EndoxideLspConnected", "󱘖 " .. client.name)
             end
             return msg
         end
@@ -311,12 +314,12 @@ return {
             visual = {
                 a = { fg = linecolors.text_dark, bg = linecolors.visual },
                 b = { fg = linecolors.text_light, bg = linecolors.secondary },
-                c = { fg = night.gray, bg = nil },
+                c = { fg = nil, bg = nil },
             },
             replace = {
                 a = { fg = linecolors.text_dark, bg = linecolors.replace },
                 b = { fg = linecolors.text_light, bg = linecolors.secondary },
-                c = { fg = night.gray, bg = nil },
+                c = { fg = nil, bg = nil },
             },
             normal = {
                 a = { fg = linecolors.text_dark, bg = linecolors.normal },
@@ -326,12 +329,12 @@ return {
             insert = {
                 a = { fg = linecolors.text_dark, bg = linecolors.insert },
                 b = { fg = linecolors.text_light, bg = linecolors.secondary },
-                c = { fg = night.gray, bg = nil },
+                c = { fg = nil, bg = nil },
             },
             command = {
                 a = { fg = linecolors.text_light, bg = linecolors.secondary },
                 b = { fg = linecolors.text_light, bg = linecolors.secondary },
-                c = { fg = night.gray, bg = nil },
+                c = { fg = nil, bg = nil },
             },
         }
 
@@ -364,11 +367,22 @@ return {
         lualine.setup(config)
         vim.o.laststatus = 3
 
+        -- autocommands
         autocmd({ "DiagnosticChanged" }, {
-            callback = function()
-                pcall(require("lualine").refresh)
-            end
-        }
-        )
+            callback = function() lualine.refresh() end
+        })
+
+        -- deferred update
+        autocmd(
+            { "RecordingLeave", "ModeChanged", "BufWritePost" },
+            {
+                group = endoxideGroup,
+                callback = function()
+                    local timer = vim.uv.new_timer()
+                    if timer then
+                        timer:start(50, 0, vim.schedule_wrap(function() lualine.refresh() end))
+                    end
+                end,
+            })
     end
 }

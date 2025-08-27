@@ -1,8 +1,6 @@
 return {
     'stevearc/oil.nvim',
     ---@module 'oil'
-    ---@type oil.SetupOpts
-    opts = {},
     -- Optional dependencies
     dependencies = { { "echasnovski/mini.icons", opts = {} } },
     -- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
@@ -12,9 +10,13 @@ return {
         local oil = require("oil")
         local nnoremap = require("endoxide.keymap").nnoremap
 
-        nnoremap("<leader>e", oil.open_float, {desc="Open oil"})
+        nnoremap("<leader>e", oil.open_float, { desc = "Open oil" })
 
+        ---@type oil.SetupOpts
         local config = {
+            view_options = {
+                show_hidden = true,
+            },
             keymaps = {
                 ["g?"] = { "actions.show_help", mode = "n" },
                 ["<CR>"] = "actions.select",

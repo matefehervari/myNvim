@@ -5,6 +5,7 @@ local vnoremap = keymap.vnoremap
 local autocommand = require("endoxide.autocommand")
 local augroup = autocommand.augroup
 local autocmd = autocommand.autocmd
+local endoxideGroup = autocommand.endoxideGroup
 local tca_ok, tca = pcall(require, "tiny-code-action")
 local tb_ok, tb = pcall(require, "telescope.builtin")
 
@@ -51,6 +52,10 @@ end
 
 ---@param mode '"forward"'|'"reverse"'
 local function jump_to_diagnostic(mode)
+    local count = vim.diagnostic.count()
+    if vim.tbl_isempty(count) then
+        return
+    end
     for severity = ERROR, HINT do
         local diagnostic
         if mode == "forward" then
@@ -60,6 +65,11 @@ local function jump_to_diagnostic(mode)
         end
         if diagnostic then
             vim.diagnostic.jump({ diagnostic = diagnostic, float = { border = "rounded", severity = { INFO, HINT } } })
+
+            local timer = vim.uv.new_timer()
+            if timer then
+                timer:start(50, 0, vim.schedule_wrap(function() vim.diagnostic.open_float() end))
+            end
             break
         end
     end
@@ -73,7 +83,7 @@ local function lsp_keymaps(bufnr)
     nnoremap("gt", ca_callback, { desc = "LSP goto type definition", buffer = bufnr })
     nnoremap("K", vim.lsp.buf.hover, { desc = "LSP hover", buffer = bufnr })
     nnoremap("<leader>rn", vim.lsp.buf.rename, { desc = "LSP rename", buffer = bufnr })
-    nnoremap("<leader>a", ca_callback, { desc = "LSP code actions", buffer = bufnr })
+    nnoremap("<leader>aa", ca_callback, { desc = "LSP code actions", buffer = bufnr })
     nnoremap("<leader>ti", function()
         local enabled = not vim.lsp.inlay_hint.is_enabled({})
         vim.lsp.inlay_hint.enable(enabled)
@@ -85,20 +95,42 @@ local function lsp_keymaps(bufnr)
     nnoremap("]d", function() jump_to_diagnostic("forward") end,
         { desc = "Diagnostic goto next", buffer = bufnr })
     nnoremap("gl", function() vim.diagnostic.open_float(rounded) end, { desc = "Diagnostic open float", buffer = bufnr })
+
+    nnoremap("gf", function() -- format file
+        vim.lsp.buf.format()
+    end, { desc = "LSP format buffer" })
+
+    vnoremap("gf", function() -- format file
+        vim.lsp.buf.format()
+    end, { desc = "LSP format lines" })
 end
 
+---Sets LSP configurations base on capabilities on attach
+---@param client vim.lsp.Client
+---@param bufnr integer
 M.on_attach = function(client, bufnr)
     lsp_keymaps(bufnr)
     lsp_highlight_document(client)
 
+    -- Format on save
+    if client.capabilities.textDocument.formatting then
+        autocmd({ "BufWritePre", }, {
+            buffer = 0,
+            desc = "Format file before write",
+            group = endoxideGroup,
+            callback = function()
+                vim.lsp.buf.format()
+            end
+        })
+    end
+
+
     if client.name == "jdtls" then
         vim.lsp.codelens.refresh()
         if JAVA_DAP_ACTIVE then -- defined in ftplugin
-            require("jdtls").setup_dap({ hotcodereplace = "auto" })
+            require("jdtls").setup_dap({ config_overrides = {}, hotcodereplace = "auto" })
             require("jdtls.dap").setup_dap_main_class_configs(require("endoxide.lsp.settings.jdtls_dap"))
         end
-        client.resolved_capabilities.document_formatting = true
-        client.resolved_capabilities.textDocument.completion.completionItem.snippetSupport = false
     elseif client.name == "rust-analyzer" then
         nnoremap("K", function() vim.cmd.RustLsp({ "hover", "actions" }) end, { desc = "RustLsp Hover", buffer = bufnr })
         nnoremap("<leader>a", function() vim.cmd.RustLsp("codeAction") end,

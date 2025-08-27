@@ -5,6 +5,7 @@ local bg = highlights.getbg
 
 local colors = {
     black = "#000000",
+    white = "#ffffff",
     error_inactive = "#880000",
     error = "#cc0000",
     warning_inactive = "#b37400",
@@ -112,7 +113,7 @@ local function ColorMyPencils()
     })
 
     hl("EndoxideBufferSelected", {
-        fg = fg("Normal"),
+        fg = colors.white,
         bg = bg("Normal"),
         bold = true
     })

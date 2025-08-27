@@ -1,30 +1,20 @@
 local M = {}
 
 M.setup = function()
+    -- Configure LSP Diagnostics
     local signs = {
         { name = "DiagnosticSignError", text = "" },
         { name = "DiagnosticSignWarn", text = "" },
-        { name = "DiagnosticSignHint", text = "" },
-        { name = "DiagnosticSignInfo", text = "" },
+        { name = "DiagnosticSignHint", text = "" },
+        { name = "DiagnosticSignInfo", text = "" },
     }
 
     for _, sign in ipairs(signs) do
         vim.fn.sign_define(sign.name, { texthl = sign.name, text = sign.text, numhl = "" })
     end
 
+    ---@type vim.diagnostic.Opts
     local config = {
-        -- disable virtual text
-        virtual_text = false,
-        virtual_lines = {
-            severity = {
-                vim.diagnostic.severity.ERROR,
-                vim.diagnostic.severity.WARN,
-            }
-        },
-        -- show signs
-        signs = {
-            active = signs,
-        },
         update_in_insert = true,
         underline = true,
         severity_sort = true,
@@ -32,7 +22,7 @@ M.setup = function()
             focusable = false,
             style = "minimal",
             border = "rounded",
-            source = "always",
+            source = "if_many",
             header = "",
             prefix = "",
         },
@@ -40,11 +30,19 @@ M.setup = function()
 
     vim.diagnostic.config(config)
 
+    -- Unmap nvim default lsp mapping
     vim.keymap.del("n", "grt")
     vim.keymap.del("n", "gri")
     vim.keymap.del("n", "gra")
     vim.keymap.del("n", "grn")
     vim.keymap.del({ "n" }, "grr")
+
+
+    -- Show diagnostic float on CursorHold
+    -- autocmd({ "CursorHold", }, {
+    --     group = endoxideGroup,
+    --     callback = function() vim.diagnostic.open_float() end
+    -- })
 end
 
 return M
