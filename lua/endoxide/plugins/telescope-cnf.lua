@@ -18,7 +18,7 @@ return {
         local builtin = require("telescope.builtin")
         local fu = require("endoxide.util.fileutils")
 
-        local ignore_patterns = { "__pycache__", "target", "node_modules", "build" }
+        local ignore_patterns = { "__pycache__", "target", "node_modules", "build", ".git" }
         local config = {
             defaults = {
 
@@ -115,7 +115,7 @@ return {
                 return telescope_fn
             end
 
-            local opts = { cwd = root_dir, no_ignore = false, no_parent_ignore = true }
+            local opts = { cwd = root_dir, no_ignore = true, hidden = true }
             opts = vim.tbl_deep_extend("force", opts, extra_opts or {})
             return function()
                 telescope_fn(opts)
@@ -132,7 +132,7 @@ return {
 
         -- Mappings
 
-        nnoremap("<leader>fa", builtin.autocommands, { desc = "Serach buffers" })
+        nnoremap("<leader>fa", builtin.autocommands, { desc = "Serach autocommands" })
         nnoremap("<leader>fb", builtin.buffers, { desc = "Serach buffers" })
         nnoremap("<leader>fc", builtin.highlights, { desc = "Search highlight colours" })
         nnoremap("<leader>fd", ":Telescope find_files cwd=", { desc = "Fuzzy find files in specified directory" })
