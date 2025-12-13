@@ -81,9 +81,13 @@ local function lsp_keymaps(bufnr)
     nnoremap("gi", vim.lsp.buf.implementation, { desc = "LSP goto implementation", buffer = bufnr })
     nnoremap("gr", ref_callback, { desc = "LSP goto references", buffer = bufnr })
     nnoremap("gt", ca_callback, { desc = "LSP goto type definition", buffer = bufnr })
-    nnoremap("K", vim.lsp.buf.hover, { desc = "LSP hover", buffer = bufnr })
+    nnoremap("K", function()
+        vim.lsp.buf.hover({
+            border = "rounded"
+        })
+    end, { desc = "LSP hover", buffer = bufnr })
     nnoremap("<leader>rn", vim.lsp.buf.rename, { desc = "LSP rename", buffer = bufnr })
-    nnoremap("<leader>aa", ca_callback, { desc = "LSP code actions", buffer = bufnr })
+    nnoremap("<leader>a", ca_callback, { desc = "LSP code actions", buffer = bufnr })
     nnoremap("<leader>ti", function()
         local enabled = not vim.lsp.inlay_hint.is_enabled({})
         vim.lsp.inlay_hint.enable(enabled)
@@ -147,6 +151,9 @@ if not status_ok then
     return
 end
 
-M.capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
+capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
+capabilities.general = vim.tbl_extend('force', capabilities.general or {}, { positionEncodings = { "utf-8" } })
+M.capabilities = capabilities
+
 
 return M

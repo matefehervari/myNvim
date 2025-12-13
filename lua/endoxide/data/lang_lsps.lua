@@ -3,7 +3,7 @@ return {
     "jdtls",         -- Java
     "lua_ls",        -- Lua
     "omnisharp",     -- C#
-    "pyright",       -- Python
+    "basedpyright",  -- Python
     "rust_analyzer", -- Rust
     "texlab",        -- Tex
     "ts_ls",         -- Typescript

@@ -6,7 +6,7 @@ M.setup = function()
         { name = "DiagnosticSignError", text = "" },
         { name = "DiagnosticSignWarn", text = "" },
         { name = "DiagnosticSignHint", text = "" },
-        { name = "DiagnosticSignInfo", text = "" },
+        { name = "DiagnosticSignInfo", text = "" },
     }
 
     for _, sign in ipairs(signs) do
@@ -36,7 +36,6 @@ M.setup = function()
     vim.keymap.del("n", "gra")
     vim.keymap.del("n", "grn")
     vim.keymap.del({ "n" }, "grr")
-
 
     -- Show diagnostic float on CursorHold
     -- autocmd({ "CursorHold", }, {

@@ -1,12 +1,14 @@
 return {
     settings = {
-        python = {
+        basedpyright = {
             analysis = {
-                typeCheckingMode = "on",
+                typeCheckingMode = "recommended",
                 diagnosticMode = "workspace",
+                autoFormatStrings = true,
             },
             -- venvPath = ".",
             -- venv = ".venv",
-        }
+        },
+        python = {}
     },
 }

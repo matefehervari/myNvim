@@ -37,7 +37,7 @@ return function(server_name)
         opts = require("endoxide.lsp.settings.jsonls")
     elseif server_name == "lua_ls" then
         opts = require("endoxide.lsp.settings.lua_ls")
-    elseif server_name == "pyright" then
+    elseif server_name == "pyright" or server_name == "basedpyright" or server_name == "pyrefly" then
         opts = require("endoxide.lsp.settings.pyright")
         opts.before_init = function(_, config)
             local venv_path, venv = get_python_venv(config.root_dir)
@@ -52,13 +52,6 @@ return function(server_name)
         opts = require("endoxide.lsp.settings.tsserver")
     elseif server_name == "omnisharp" then
         opts = require("endoxide.lsp.settings.omnisharp")
-        -- elseif server_name == "rust_analyzer" then -- let rust-tools setup lspconfig
-        --     local rust_analyzer_opts = require("endoxide.lsp.settings.rust_analyzer")
-        --     opts = vim.tbl_deep_extend("force", rust_analyzer_opts, forced_opts)
-        --
-        --     local rt = require("rust-tools")
-        --     rt.setup({ server = opts })
-        --     return
     end
 
     opts = vim.tbl_deep_extend("force", opts, forced_opts)
