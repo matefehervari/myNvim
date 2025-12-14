@@ -9,7 +9,6 @@ return {
         local insert_all = require("endoxide.util.lua-utils").insert_all
 
         local lang_servers = require("endoxide.data.lang_lsps")
-        local setup_server = require("endoxide.lsp.setup_server")
 
         local config = {
             ensure_installed = {
@@ -37,7 +36,7 @@ return {
 
         local servers = mason_lsp.get_installed_servers()
         for _, server_name in ipairs(servers) do
-            setup_server(server_name)
+            vim.lsp.enable(server_name)
         end
     end
 }

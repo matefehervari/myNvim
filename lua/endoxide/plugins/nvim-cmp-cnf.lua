@@ -36,11 +36,6 @@ return {
     },
 
     config = function()
-        require("vim-react-snippets").lazy_load()
-        local react_config = require("vim-react-snippets.config")
-        react_config.readonly_props = false
-
-
         local cmp = require("cmp")
         local luasnip = require("luasnip")
 

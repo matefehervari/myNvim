@@ -1,3 +1,5 @@
+-- this file defines a common on_attach function to setup for LSP servers
+
 local keymap = require("endoxide.keymap")
 local nnoremap = keymap.nnoremap
 local vnoremap = keymap.vnoremap
@@ -23,6 +25,7 @@ local rounded = { border = "rounded" }
 
 local M = {}
 
+-- setup highlighting of words
 local function lsp_highlight_document(client)
     -- Set autocommands conditional on server_capabilities
     if not client.resolved_capabilities then
@@ -50,6 +53,7 @@ local function lsp_highlight_document(client)
     end
 end
 
+-- Jump to diagnostics in severity order
 ---@param mode '"forward"'|'"reverse"'
 local function jump_to_diagnostic(mode)
     local count = vim.diagnostic.count()
@@ -75,6 +79,7 @@ local function jump_to_diagnostic(mode)
     end
 end
 
+-- Setup keymaps
 local function lsp_keymaps(bufnr)
     nnoremap("gd", def_callback, { desc = "LSP goto defintion", buffer = bufnr })
     nnoremap("gD", vim.lsp.buf.declaration, { desc = "LSP goto declaration", buffer = bufnr })
@@ -113,8 +118,8 @@ end
 ---@param client vim.lsp.Client
 ---@param bufnr integer
 M.on_attach = function(client, bufnr)
-    lsp_keymaps(bufnr)
-    lsp_highlight_document(client)
+    lsp_keymaps(bufnr) -- setup keymaps
+    lsp_highlight_document(client) -- setup highlighting
 
     -- Format on save
     if client.capabilities.textDocument.formatting then
@@ -128,7 +133,7 @@ M.on_attach = function(client, bufnr)
         })
     end
 
-
+    -- additional setup on attach
     if client.name == "jdtls" then
         vim.lsp.codelens.refresh()
         if JAVA_DAP_ACTIVE then -- defined in ftplugin
@@ -143,17 +148,5 @@ M.on_attach = function(client, bufnr)
             { desc = "RustLsp code actions", buffer = bufnr })
     end
 end
-
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-
-local status_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-if not status_ok then
-    return
-end
-
-capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
-capabilities.general = vim.tbl_extend('force', capabilities.general or {}, { positionEncodings = { "utf-8" } })
-M.capabilities = capabilities
-
 
 return M

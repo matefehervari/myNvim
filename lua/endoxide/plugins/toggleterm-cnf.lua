@@ -53,6 +53,7 @@ return {
         local python   = Terminal:new({ cmd = "python3", hidden = true, direction = "float", on_open = on_open })
         local gitui    = Terminal:new({ cmd = "gitui", hidden = true, direction = "float", on_open = on_open })
         local swipl    = Terminal:new({ cmd = "swipl", hidden = true, direction = "float", on_open = on_open })
+        local posting  = Terminal:new({ cmd = "posting", hidden = true, direction = "float", o_open = on_open })
 
         function _NODE_TOGGLE()
             node:toggle()
@@ -68,6 +69,10 @@ return {
 
         function _SWIPL_TOGGLE()
             swipl:toggle()
+        end
+
+        function _POSTING_TOGGLE()
+            posting:toggle()
         end
 
         local function set_terminal_keymaps()
@@ -101,5 +106,6 @@ return {
         nnoremap("<leader>tg", _GITUI_TOGGLE, { desc = "ToggleTerm gitui" })
         nnoremap("<leader>ts", _SWIPL_TOGGLE, { desc = "ToggleTerm swipl shell" })
         nnoremap("<leader>tn", _NODE_TOGGLE, { desc = "ToggleTerm node shell" })
+        nnoremap("<leader>tr", _POSTING_TOGGLE, { desc = "ToggleTerm posting TUI" })
     end
 }

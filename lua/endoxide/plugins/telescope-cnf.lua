@@ -18,7 +18,7 @@ return {
         local builtin = require("telescope.builtin")
         local fu = require("endoxide.util.fileutils")
 
-        local ignore_patterns = { "__pycache__", "target", "node_modules", "build", ".git" }
+        local ignore_patterns = { "__pycache__", "target", "node_modules", "build", ".git", ".venv", "venv" }
         local config = {
             defaults = {
 
@@ -121,14 +121,6 @@ return {
                 telescope_fn(opts)
             end
         end
-
-        -- local function glob_mod(telescope_fn)
-        --     local opts = { glob_pattern = ignore_patterns }
-        --     return function(extra_opts)
-        --         opts = vim.tbl_deep_extend("force", opts, extra_opts or {})
-        --         telescope_fn(opts)
-        --     end
-        -- end
 
         -- Mappings
 
