@@ -9,3 +9,9 @@ vim.lsp.config("*", {
     on_attach = on_attach,
     capabilities = capabilities
 })
+
+-- Required by rustaceanvim
+vim.lsp.config("rust-analyzer", {
+    on_attach = on_attach,
+    capabilities = capabilities,
+})
