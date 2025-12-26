@@ -18,7 +18,7 @@ return {
         local builtin = require("telescope.builtin")
         local fu = require("endoxide.util.fileutils")
 
-        local ignore_patterns = { "__pycache__", "target", "node_modules", "build", ".git", ".venv", "venv" }
+        local ignore_patterns = { "__pycache__", "target", "node_modules", "build", ".git", ".venv", "obj", "bin" }
         local config = {
             defaults = {
 
@@ -108,9 +108,10 @@ return {
         local Remap = require("endoxide.keymap")
         local nnoremap = Remap.nnoremap
 
-        local root_markers = { ".git", "mvnw", "gradlew", "pom.xml", "build.gradle", "pyproject.toml", "Cargo.toml" }
+        local root_markers = { ".git", "mvnw", "gradlew", "pom.xml", "build.gradle", "pyproject.toml", "Cargo.toml",
+            "*.csproj" }
         local function root_mod(telescope_fn, extra_opts)
-            local root_dir = fu.find_root(root_markers)
+            local root_dir = fu.find_root(nil, root_markers)
             if root_dir == "" then
                 return telescope_fn
             end
