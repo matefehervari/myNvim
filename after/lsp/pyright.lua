@@ -6,8 +6,6 @@ return {
                 diagnosticMode = "workspace",
                 autoFormatStrings = true,
             },
-            -- venvPath = ".",
-            -- venv = ".venv",
         },
         python = {}
     },
