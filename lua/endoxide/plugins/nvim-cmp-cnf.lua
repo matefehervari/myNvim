@@ -20,7 +20,7 @@ local border = {
 
 return {
     "hrsh7th/nvim-cmp", -- The completion plugin
-    -- event = "InsertEnter",
+    event = "InsertEnter",
 
     dependencies = {
         "hrsh7th/cmp-buffer",                  -- buffer completions
