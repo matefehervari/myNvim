@@ -23,8 +23,6 @@ local sev = vim.diagnostic.severity
 local ERROR, INFO, HINT = sev.ERROR, sev.INFO, sev.HINT
 local rounded = { border = "rounded" }
 
-local M = {}
-
 -- setup highlighting of words
 local function lsp_highlight_document(client)
     -- Set autocommands conditional on server_capabilities
@@ -117,8 +115,8 @@ end
 ---Sets LSP configurations base on capabilities on attach
 ---@param client vim.lsp.Client
 ---@param bufnr integer
-M.on_attach = function(client, bufnr)
-    lsp_keymaps(bufnr) -- setup keymaps
+local function on_attach(client, bufnr)
+    lsp_keymaps(bufnr)             -- setup keymaps
     lsp_highlight_document(client) -- setup highlighting
 
     -- Format on save
@@ -149,4 +147,4 @@ M.on_attach = function(client, bufnr)
     end
 end
 
-return M
+return on_attach
