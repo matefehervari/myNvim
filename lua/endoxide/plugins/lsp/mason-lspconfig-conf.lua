@@ -38,5 +38,7 @@ return {
         for _, server_name in ipairs(servers) do
             vim.lsp.enable(server_name)
         end
+        -- Until ty isn't added to the masonry
+        vim.lsp.enable("ty")
     end
 }
