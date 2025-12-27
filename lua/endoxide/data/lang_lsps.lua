@@ -4,8 +4,9 @@ return {
     "lua_ls",        -- Lua
     "omnisharp",     -- C#
     "pyrefly",       -- Python
-    -- uv tool install ty@latest -- Python
+    -- "ty"          -- Python
     "rust_analyzer", -- Rust
     "texlab",        -- Tex
     "ts_ls",         -- Typescript
+    "kotlin_lsp",    -- Kotlin
 }
