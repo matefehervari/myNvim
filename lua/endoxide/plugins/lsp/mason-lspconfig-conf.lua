@@ -27,17 +27,17 @@ return {
                 -- Format
                 "ruff", -- Python
             },
-            automatic_enable = false,
+            automatic_enable = {
+                exclude = {
+                    "rust_analyzer",
+                }
+            },
         }
 
         insert_all(config.ensure_installed, lang_servers)
 
         mason_lsp.setup(config)
 
-        local servers = mason_lsp.get_installed_servers()
-        for _, server_name in ipairs(servers) do
-            vim.lsp.enable(server_name)
-        end
         -- Until ty isn't added to the masonry
         vim.lsp.enable("ty")
     end
