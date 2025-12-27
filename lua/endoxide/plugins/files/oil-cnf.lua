@@ -14,6 +14,11 @@ return {
 
         ---@type oil.SetupOpts
         local config = {
+            float = {
+                border = "rounded",
+                max_width = 0.9,
+                max_height = 0.9
+            },
             view_options = {
                 show_hidden = true,
             },

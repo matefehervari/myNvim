@@ -77,3 +77,6 @@ for _, c in ipairs(whichwrap_chars) do
     whichwrap[c] = true
 end
 vim.opt.whichwrap:append(whichwrap)
+
+vim.g.health = { style = 'float' }
+vim.opt.winborder = "rounded"
