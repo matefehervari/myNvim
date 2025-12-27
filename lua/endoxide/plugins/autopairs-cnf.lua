@@ -1,7 +1,9 @@
 return {
     'windwp/nvim-autopairs',
     event = "InsertEnter",
-
+    dependencies = {
+        "hrsh7th/nvim-cmp",
+    },
     config = function()
         local npairs = require("nvim-autopairs")
 
@@ -77,12 +79,9 @@ return {
         npairs.add_rules(rules)
 
         -- cmp setup
-        local cmp_autopairs = require "nvim-autopairs.completion.cmp"
-        local cmp_status_ok, cmp = pcall(require, "cmp")
-        if not cmp_status_ok then
-            vim.notify("Failed to load cmp", 4, { title = "'nvim-autopairs' configuration" })
-            return
-        end
+        local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+        local cmp = require("cmp")
+
         -- add brackets after cmp.lsp event (function and method completion)
         cmp.event:on("confirm_done",
             cmp_autopairs.on_confirm_done({
