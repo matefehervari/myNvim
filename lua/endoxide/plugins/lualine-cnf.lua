@@ -140,11 +140,40 @@ return {
         local buffers3 = {
             function()
                 local current = vim.api.nvim_get_current_buf()
-                local pinned = vim.g.endoxide.bufferspinned
+
+                -- get listed buffers known by nvim
+                local buffers_listed = vim.tbl_map(function(bufinfo)
+                        return bufinfo.bufnr
+                    end,
+                    vim.fn.getbufinfo({ buflisted = 1 })
+                )
+
+                -- get tracked buffers which are still listed
+                local buffers = vim.tbl_filter(function(bufnr)
+                        return vim.tbl_contains(buffers_listed, bufnr)
+                    end,
+                    vim.g.endoxide.buffers
+                )
+
+                -- get tracked pinned buffers which are still listed
+                local pinned = vim.tbl_filter(function(bufnr)
+                        return vim.tbl_contains(buffers_listed, bufnr)
+                    end,
+                    vim.g.endoxide.bufferspinned
+                )
+
+                -- add untracked listed buffers
+                for _, bufnr in ipairs(buffers_listed) do
+                    if not vim.tbl_contains(buffers, bufnr) and not vim.tbl_contains(pinned, bufnr) then
+                        table.insert(buffers, bufnr)
+                    end
+                end
 
                 local curr_pinned = utils.find(pinned, current) ~= nil
+                vim.g.endoxide = vim.tbl_extend('keep', { buffers = buffers, bufferspinned = pinned },
+                    vim.g.endoxide)
 
-                local buffers = vim.g.endoxide.buffers
+                -- local buffers = vim.g.endoxide.buffers
                 local buffers_left = {}
                 local buffers_right = {}
                 local append_to = buffers_left

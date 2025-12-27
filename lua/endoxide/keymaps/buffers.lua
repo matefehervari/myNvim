@@ -193,6 +193,7 @@ nnoremap(
     function()
         local current = vim.api.nvim_get_current_buf()
         local buffers = vim.g.endoxide.buffers
+        vim.g.endoxide = vim.tbl_extend('keep', { buffers = { current } }, vim.g.endoxide)
 
         for _, bufnr in ipairs(buffers) do
             if bufnr ~= current then
