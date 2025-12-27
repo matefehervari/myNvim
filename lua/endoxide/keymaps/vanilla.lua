@@ -68,21 +68,8 @@ end, { desc = "Stop insert mode (unlink snippet jumps)" })
 
 vnoremap("<ESC>", "<C-c>", { desc = "Stop visual mode" })
 snoremap("<ESC>", "<C-c>", { desc = "Stop select mode" })
--- snoremap("<ESC>", function()
---     vim.cmd("stopinsert")
---     local luasnip = require("luasnip")
---     if luasnip.jumpable() then
---         luasnip.unlink_current()
---     end
--- end, { desc = "Stop replace mode (unlink snippet jumps)" })
 tnoremap("<ESC>", [[<C-\><C-n>]], { desc = "Stop terminal mode" })
 cnoremap("<ESC>", "<C-c>", { desc = "Stop command mode" })
-nnoremap("<ESC>", function()
-    local buf_ft = vim.api.nvim_get_option_value("filetype", {})
-    if buf_ft == "checkhealth" then
-        vim.cmd("tabclose")
-    end
-end, { desc = "Normal mode escape actions" })
 
 -- move lines around
 nnoremap("<C-Up>", ":m .-2<CR>==", { desc = "Move line up" })

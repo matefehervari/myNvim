@@ -3,6 +3,7 @@ local tsutils = require("endoxide.util.tsutils")
 local augroup = vim.api.nvim_create_augroup
 local endoxideGroup = augroup('endoxide', {})
 local autocmd = vim.api.nvim_create_autocmd
+local nnoremap = require("endoxide.keymap").nnoremap
 
 local function setup_buffers()
     -- Buffer info
@@ -111,6 +112,17 @@ local function setup()
         group = endoxideGroup,
         callback = function()
             vim.highlight.on_yank()
+        end
+    })
+
+    autocmd({ "FileType", }, {
+        desc = "Map ESC to exit checkhealth",
+        group = endoxideGroup,
+        pattern = "checkhealth",
+        callback = function()
+            nnoremap("<ESC>", function()
+                vim.api.nvim_win_close(0, true)
+            end, { buffer = 0 })
         end
     })
 
