@@ -111,7 +111,7 @@ local function setup()
         desc = "Highlight when yanking text",
         group = endoxideGroup,
         callback = function()
-            vim.highlight.on_yank()
+            vim.hl.on_yank()
         end
     })
 
