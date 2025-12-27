@@ -91,8 +91,24 @@ return {
 
         autocmd({ "TermOpen", }, {
             group = endoxideGroup,
-            pattern = "term://*",
+            pattern = "*",
             callback = set_terminal_keymaps
+        })
+
+        autocmd({ "TermOpen" }, {
+            group = endoxideGroup,
+            pattern = "*",
+            callback = function()
+                vim.wo.colorcolumn = "0"
+            end
+        })
+
+        autocmd({ "FileType", }, {
+            group = endoxideGroup,
+            pattern = "toggleterm",
+            callback = function()
+                vim.wo.colorcolumn = "0"
+            end
         })
 
         nnoremap("<leader>tt", ":ToggleTerm direction=float dir=git_dir <CR>", { desc = "ToggleTerm working directory" })
