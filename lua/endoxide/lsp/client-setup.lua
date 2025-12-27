@@ -3,16 +3,12 @@
 -- configuration of LSP servers
 
 -- Configure LSP Diagnostics
-local signs = {
-    { name = "DiagnosticSignError", text = "" },
-    { name = "DiagnosticSignWarn", text = "" },
-    { name = "DiagnosticSignHint", text = "" },
-    { name = "DiagnosticSignInfo", text = "" },
+local text = {
+    [vim.diagnostic.severity.ERROR] = "",
+    [vim.diagnostic.severity.WARN] = "",
+    [vim.diagnostic.severity.HINT] = "",
+    [vim.diagnostic.severity.INFO] = "",
 }
-
-for _, sign in ipairs(signs) do
-    vim.fn.sign_define(sign.name, { texthl = sign.name, text = sign.text, numhl = "" })
-end
 
 ---@type vim.diagnostic.Opts
 local config = {
@@ -27,6 +23,9 @@ local config = {
         header = "",
         prefix = "",
     },
+    signs = {
+        text = text
+    }
 }
 
 vim.diagnostic.config(config)
