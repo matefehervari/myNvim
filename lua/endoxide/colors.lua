@@ -27,10 +27,6 @@ local function ColorMyPencils()
         bg = "#343d59",
     })
 
-    hl("VirtualColumn", {
-        fg = "#111111"
-    })
-
     hl("CursorLineNR", {
         bg = "None"
     })
@@ -73,38 +69,31 @@ local function ColorMyPencils()
     })
 
     hl("FloatBorder", {
-        fg = fg("Special"),
-        bg = "None"
+        link = "Special"
     })
 
     hl("LspInlayHint", {
-        fg = "#545c7e",
-        bg = "none",
+        link = "ComplHint"
     })
 
     hl("StatusLine", {
-        fg = fg("Special"),
-        -- bg = fg("Special"),
-        bg = "None"
+        link = "Special"
     })
+
     hl("StatusLineNC", {
-        fg = fg("Special"),
-        bg = fg("Special"),
+        link = "Special"
     })
 
     hl("DiagnosticVirtualTextError", {
-        fg = fg("DiagnosticError"),
-        bg = bg("Normal"),
+        link = "DiagnosticError"
     })
 
     hl("DiagnosticVirtualTextWarn", {
-        fg = fg("DiagnosticWarn"),
-        bg = bg("Normal"),
+        link = "DiagnosticWarn"
     })
 
     hl("DiagnosticVirtualTextHint", {
-        fg = fg("DiagnosticHint"),
-        bg = bg("Normal"),
+        link = "DiagnosticHint"
     })
 
     hl("EndoxideBuffer", {
