@@ -57,5 +57,6 @@
   "vim-bsv": { "branch": "master", "commit": "b03893b98f5b772297e48671a9c5f92f1c7d10eb" },
   "vim-react-snippets": { "branch": "main", "commit": "cae124a8b1c96f6233069895a1280c8c64aa3478" },
   "vim-tmux-navigator": { "branch": "master", "commit": "c45243dc1f32ac6bcf6068e5300f3b2b237e576a" },
-  "vimtex": { "branch": "master", "commit": "6e1229e23c3bbe93487ef62458b1241a2d8ff6af" }
+  "vimtex": { "branch": "master", "commit": "6e1229e23c3bbe93487ef62458b1241a2d8ff6af" },
+  "virtcolumn.nvim": { "branch": "main", "commit": "4d385b4aa42aa3af6fa2cb8527462fa4badbd163" }
 }
