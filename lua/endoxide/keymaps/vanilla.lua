@@ -139,3 +139,7 @@ vnoremap("<leader>x", "<ESC><cmd>'<,'>lua<CR>gv", { desc = "Run lines in Lua" })
 -- duplicate with replace
 nnoremap("<leader>dr", "<cmd>DuplicateWithReplace<CR>", { desc = "DuplicateWithReplace" })
 vnoremap("<leader>dr", "<cmd>DuplicateWithReplace<CR>", { desc = "DuplicateWithReplace lines" })
+
+-- Duplicate lines
+nnoremap("<leader>.", "<cmd>DuplicateLine<CR>", { desc = "Duplicate line" })
+vnoremap("<leader>.", "<cmd>DuplicateLines<CR>", { desc = "Duplicate lines" })
